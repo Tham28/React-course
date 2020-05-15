@@ -1,0 +1,97 @@
+.container-input {
+    width: 27%;
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+    margin: 5% 10%;
+    padding: 20px;
+    background: #fff;
+    max-width: 1200px;
+}
+.title-sign {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.title {
+    display: flex;
+    font-size: 36px;
+    font-weight: bold;
+}
+h2.in {
+    color: blue;
+    padding-left: 6px;
+    position: relative;
+}
+h2.in::before{
+    position: absolute;
+    content: '';
+    border: 3px solid blue;
+    width: 40px;
+    bottom: -12px;
+}
+button.btn-sign-in {
+    border: none;
+    background: #fff;
+    display: flex;
+   
+}
+.link-sign-up {
+    display: flex;
+    align-items: center;
+    color: #081826;
+    font-size: 14px;
+    font-weight: bold;
+}
+.img-arrow{
+    padding-left: 5px;
+}
+h4 {
+    color: #686F75;
+    margin-top: 30px;
+    font-size: 14px;
+    font-weight: normal;
+}
+form {
+    margin-top: 20px;
+}
+label {
+    color: #686F75;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase
+}
+input {
+    border: 1px solid #E4E6E8;
+    padding: 10px;
+    border-radius: 6px;
+    outline: none;
+    width: 100%;
+    margin-bottom: 10px;
+}
+input::placeholder{
+    color: #99C0E0;
+    font-size: 14px;
+}
+button.btn-sign {
+    width: 100%;
+    background: linear-gradient(171.15deg, #0184F3 0%, #2B2891 100%);
+    border-radius: 6px;
+    border: none;
+    padding: 10px;
+    margin-top: 20px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+}
+.forgot {
+    display: flex;
+    justify-content: space-between;
+   
+    margin-top: 10px;
+}
+a {
+    color: #0084F4;
+    font-size: 14px;
+    font-weight: normal;
+    text-decoration: none;
+}

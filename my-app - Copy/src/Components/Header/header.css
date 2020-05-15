@@ -1,0 +1,18 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* .header-section{
+    background-image: url('./images/bg-sign.png');
+    background-size: cover;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    height: 1000px;
+    background-color:  #E6F3FF;
+} */
+.container-header {
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+}
