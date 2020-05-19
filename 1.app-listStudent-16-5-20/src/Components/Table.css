@@ -2,7 +2,8 @@ table{
     border: 1px solid #727071;
     width: 100%;
     max-width: 1200px;
-    margin: 20px auto
+    margin: 20px auto;
+    margin-bottom: 0;
 }
 td, th {
    
@@ -73,7 +74,7 @@ button.btn-Add {
     border-radius: 8px;
    text-transform: uppercase;
     outline: 0;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
     cursor: pointer;
 }
 button.btn-Add:hover{
@@ -87,5 +88,23 @@ button.btn-Add:hover{
 .txt-error {
     margin: 10px;
     font-size: 13px;
+    color: red;
+}
+
+.deteteAll {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+button.btn-deleteAll {
+    padding: 4px 23px;
+    margin-bottom: 50px;
+}
+.no-data {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border: 1px solid grey;
+    padding: 5px;
     color: red;
 }
