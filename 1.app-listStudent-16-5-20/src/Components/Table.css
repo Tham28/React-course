@@ -1,4 +1,4 @@
-table{
+.listStudent{
     border: 1px solid #727071;
     width: 100%;
     max-width: 1200px;
@@ -16,6 +16,7 @@ td, th {
     max-width: 1200px;
     margin: 10px auto;
     display: flex;
+    flex-direction: column;
 }
 tbody tr:hover{
     box-shadow: 0 0 5px 2px rgb(175, 172, 172);
@@ -86,11 +87,13 @@ button.btn-Add:hover{
     font-weight: 500;
 }
 .txt-error {
-    margin: 10px;
+    margin-left: 8%;
     font-size: 13px;
     color: red;
 }
-
+.left {
+    display: flex;
+}
 .deteteAll {
     width: 100%;
     max-width: 1200px;
@@ -99,6 +102,7 @@ button.btn-Add:hover{
 button.btn-deleteAll {
     padding: 4px 23px;
     margin-bottom: 50px;
+    outline: none;
 }
 .no-data {
     width: 100%;
@@ -107,4 +111,5 @@ button.btn-deleteAll {
     border: 1px solid grey;
     padding: 5px;
     color: red;
+    text-align: center;
 }

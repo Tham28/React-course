@@ -3,9 +3,14 @@ import './Table.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import Calendar from 'rc-calendar';
+import 'rc-calendar/assets/index.css';
+import DatePicker from 'rc-calendar/lib/Picker';
+import moment from 'moment'
 
 
 toast.configure()
+
 class Table extends Component {
     constructor(props) {
         super(props);
@@ -15,7 +20,7 @@ class Table extends Component {
 
                     name: 'Hồ Nhất Sinh',
                     age: 23,
-                    birthday: '1997-11-06',
+                    birthday: '06/11/1997',
                     gender: 'Male',
                     email: 'honhatsinh.0611@gmail.com'
                 },
@@ -23,7 +28,7 @@ class Table extends Component {
 
                     name: 'Trần Thị Hồng Thắm',
                     age: 22,
-                    birthday: '1998-10-28',
+                    birthday: '28/10/1998',
                     gender: 'Female',
                     email: 'tththam.2810@gamil.com'
                 },
@@ -31,14 +36,14 @@ class Table extends Component {
 
                     name: 'Hồ Nhất Sinh',
                     age: 23,
-                    birthday: '1997-11-06',
+                    birthday: '06/11/1997',
                     gender: 'Male',
                     email: 'honhatsinh.0611@gmail.com'
                 },
                 {
                     name: 'Trần Thị Hồng Thắm',
                     age: 22,
-                    birthday: '1998-10-28',
+                    birthday: '28/10/1998',
                     gender: 'Female',
                     email: 'tththam.2810@gamil.com'
                 }
@@ -74,8 +79,8 @@ class Table extends Component {
             listStudent
         } = this.state
 
-        const regexp = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/
-        const checkingResult = regexp.test(studentEmail);
+        const regEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/
+        const checkingResult = regEmail.test(studentEmail);
         let isInputValid = false;
         let hasError = false;
         if (!studentName) {
@@ -85,9 +90,7 @@ class Table extends Component {
         if (!studentAge) {
             hasError = true;
             errorAge = 'Please input age!'
-        }else if(parseInt(studentAge) <= 0 && studentAge){
-            hasError = true;
-            errorAge = 'Please input the correct age!'
+      
         }
         if (!studentBirthday) {
             hasError = true;
@@ -100,14 +103,9 @@ class Table extends Component {
         if (!studentEmail) {
             hasError = true;
             errorEmail = 'Please input email!'
-        } else if (checkingResult && studentEmail) {
-            isInputValid = true;
-            errorEmail = ''
-
-        } else if(!checkingResult && studentEmail ) {
+        } else if (!checkingResult) {
             hasError = true;
-            isInputValid = false;
-            errorEmail = 'Please enter the correct email!'
+            errorEmail = 'Please input the correct email!'
         }
 
         if (hasError) {
@@ -123,14 +121,14 @@ class Table extends Component {
         const newStudent = {
             name: studentName,
             age: studentAge,
-            birthday: studentBirthday,
+            birthday: moment(studentBirthday).format("DD/MM/YYYY"),
             gender: studentGender,
             email: studentEmail
         }
         const newListStudent = [...listStudent];
         newListStudent.push(newStudent);
         this.setState({ listStudent: newListStudent })
-       
+
         toast.success('Thêm thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
 
         //this.myFormRef.reset();
@@ -139,7 +137,7 @@ class Table extends Component {
             studentName: '',
             studentAge: '',
             studentBirthday: '',
-            studentGender:'',
+            studentGender: '',
             studentEmail: ''
         })
     }
@@ -148,23 +146,27 @@ class Table extends Component {
         const { listStudent } = this.state;
         listStudent.splice(idx, 1);
         this.setState({ listStudent });
-       
-       
     }
 
     deleteAllStudent = () => {
         const listStudent = [...this.state.listStudent];
         listStudent.splice(0, listStudent.length)
         this.setState({ listStudent })
-    
     }
 
+    handleChange = (date) => {
 
+        this.setState({
+            studentBirthday: date,
+            errorBirthday:''
+        })
+    }
     render() {
+        const calendar = (<Calendar />);
         return (
             <div>
 
-                <table>
+                <table className='listStudent'>
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -197,40 +199,51 @@ class Table extends Component {
 
                     </tbody>
                 </table>
-                        {
-                            (this.state.listStudent.length ===0) &&
-                            <div className='no-data'>
-                                No data found!
+                {
+                    (this.state.listStudent.length === 0) &&
+                    <div className='no-data'>
+                        No data found!
                             </div>
-                        }
+                }
 
                 <form >
                     <div className="addStudent">
-                        <label htmlFor="">Name:</label>
-                        <input type="text" value={this.state.studentName} onChange={(e) => {
-                            this.setState({
-                                studentName: e.target.value,
-                                errorName: ''
-                            })
-                        }} />
+                        <div className='left'>
+                            <label htmlFor="">Name:</label>
+                            <input type="text" value={this.state.studentName} onChange={(e) => {
+                                this.setState({
+                                    studentName: e.target.value,
+                                    errorName: ''
+                                })
+                            }} />
+                        </div>
                         {this.state.errorName &&
                             <div className='txt-error'>
                                 {this.state.errorName}
                             </div>
                         }
-
                     </div>
                     <div className="addStudent">
-                        <label htmlFor="">Age:</label>
-                        <input type="number" value={this.state.studentAge}  min='1' onChange={(e) => {
-                            this.setState({
-                                studentAge: e.target.value,
-                                errorAge: ''
-                            })
-                            
-                        }}
-                       
-                        />
+                        <div className='left'>
+                            <label htmlFor="">Age:</label>
+                            <input type='text' value={this.state.studentAge} onChange={(e) => {
+                                const ageTxt= e.target.value.replace(/\D/, '')
+                                this.setState({
+                                    studentAge: ageTxt,
+                                })
+                                if(ageTxt==''){
+                                    this.setState({
+                                        errorAge:'Please input the correct age!'
+                                    })
+                                }else{
+                                    this.setState({
+                                        errorAge:''
+                                    })
+                                }
+                               
+                            }}
+                            />
+                        </div>
                         {this.state.errorAge &&
                             <div className='txt-error'>
                                 {this.state.errorAge}
@@ -238,40 +251,71 @@ class Table extends Component {
                         }
                     </div>
                     <div className="addStudent">
-                        <label htmlFor="">Birthday:</label>
-                        <input type="date" value={this.state.studentBirthday} onChange={(e) => {
-                            this.setState({
-                                studentBirthday: e.target.value,
-                                errorBirthday: ''
-                            })
+                        <div className='left'>
+                            <label htmlFor="">Birthday:</label>
+                            <DatePicker
+                                animation="slide-up"
+                                value={moment(this.state.studentBirthday)}
+                                disabled={false}
+                                calendar={calendar}
+                                onChange={this.handleChange}
+                            >
+                                {
+                                    ({ value }) => {
+                                        
+                                        return (
+                                            <input value={this.state.studentBirthday ? moment(value).format('DD/MM/YYYY') : 'dd/mm/yyyy'} />
+                                           
+                                        )
+                                    }
+                                }
 
-                        }} />
+
+                            </DatePicker>
+                        </div>
                         {this.state.errorBirthday &&
                             <div className='txt-error'>
                                 {this.state.errorBirthday}
                             </div>
                         }
                     </div>
+                    {/* <DatePicker
+                        animation="slide-up"
+                        value={moment(this.state.studentBirthday)}
+                        disabled={false}
+                        calendar={calendar}
+                        onChange = {this.handleChange}
+                    >{
+                            ({ value }) => {
+                                return (
+                                    <input value={moment(value).format('MM-DD-YYYY')} />
+                                )
+                            }
+                        }</DatePicker> */}
                     <div className="addStudent">
-                        <label htmlFor="">Gender:</label>
-                        <div className='gender'>
-                            <input type="radio" id="male"  name="gender" defaultValue="Male" onChange={(e) => {
-                                this.setState({
-                                    studentGender: e.target.value,
-                                    errorGender: ''
-                                })
-                            }} />
-                            <label htmlFor="male">Male</label> <br />
-                            <input type="radio" id="female"  name="gender" defaultValue="Female" onChange={(e) => {
-                                this.setState({
-                                    studentGender: e.target.value,
-                                    errorGender: ''
-                                })
-                            }} />
-                            <label htmlFor="female">Female</label>
+                        <div className='left'>
+                            <label htmlFor="">Gender:</label>
+                            <div className='gender'>
+                                <input type="radio" id="male" name="gender" defaultValue="Male" onChange={(e) => {
+                                    this.setState({
+                                        studentGender: e.target.value,
+                                        errorGender: ''
+                                    })
+                                }} />
+                                <label htmlFor="male">Male</label> <br />
+                                <input type="radio" id="female" name="gender" defaultValue="Female" onChange={(e) => {
+                                    this.setState({
+                                        studentGender: e.target.value,
+                                        errorGender: ''
+                                    })
+                                }} />
+                                <label htmlFor="female">Female</label>
+                            </div>
                         </div>
                         {this.state.errorGender &&
+
                             <div className='txt-error'>
+
                                 {this.state.errorGender}
                             </div>
                         }
@@ -279,13 +323,17 @@ class Table extends Component {
                     </div>
 
                     <div className="addStudent">
-                        <label htmlFor="">Email:</label>
-                        <input type="text" value={this.state.studentEmail} onChange={(e) => {
-                            this.setState({
-                                studentEmail: e.target.value,
-                                errorEmail: ''
-                            })
-                        }} />
+                        <div className='left'>
+                            <label htmlFor="">Email:</label>
+                            <input type="text" value={this.state.studentEmail} onChange={(e) => {
+                                this.setState({
+                                    studentEmail: e.target.value,
+                                    errorEmail: ''
+                                })
+                            }} />
+
+                        </div>
+
                         {this.state.errorEmail &&
                             <div className='txt-error'>
                                 {this.state.errorEmail}
