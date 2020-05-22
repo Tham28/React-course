@@ -10,44 +10,13 @@ import moment from 'moment'
 
 
 toast.configure()
+const DATE_FORMAT = 'DD/MM/YYYY'
 
 class Table extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            listStudent: [
-                {
-
-                    name: 'Hồ Nhất Sinh',
-                    age: 23,
-                    birthday: '06/11/1997',
-                    gender: 'Male',
-                    email: 'honhatsinh.0611@gmail.com'
-                },
-                {
-
-                    name: 'Trần Thị Hồng Thắm',
-                    age: 22,
-                    birthday: '28/10/1998',
-                    gender: 'Female',
-                    email: 'tththam.2810@gamil.com'
-                },
-                {
-
-                    name: 'Hồ Nhất Sinh',
-                    age: 23,
-                    birthday: '06/11/1997',
-                    gender: 'Male',
-                    email: 'honhatsinh.0611@gmail.com'
-                },
-                {
-                    name: 'Trần Thị Hồng Thắm',
-                    age: 22,
-                    birthday: '28/10/1998',
-                    gender: 'Female',
-                    email: 'tththam.2810@gamil.com'
-                }
-            ],
+            listStudent: [],
             studentName: '',
             studentAge: '',
             studentBirthday: '',
@@ -58,9 +27,35 @@ class Table extends Component {
             errorBirthday: "",
             errorGender: "",
             errorEmail: "",
-            noData: ''
+            noData: '',
+            postId:'',
         }
     }
+    componentDidMount(){
+        this.getListStudents()
+
+    }
+    formatDataForDisplay(data){
+        return data.map(item=>{
+            return {
+                ...item,
+                birthday: moment(item.birthDay * 1000).format()
+            }
+        })
+    }
+
+    getListStudents =()=>{
+        fetch("https://5ec740ac5961a20016a9ed8d.mockapi.io/student")
+        .then(response => response.json())
+        .then(data => {
+            const formatedData = this.formatDataForDisplay(data)
+            this.setState({
+                listStudent: formatedData
+            })
+        })
+    }
+  
+
     addSucess = () => {
         return <div className="alert alert-primary" role="alert">
             This is a primary alert—check it out!
@@ -121,7 +116,7 @@ class Table extends Component {
         const newStudent = {
             name: studentName,
             age: studentAge,
-            birthday: moment(studentBirthday).format("DD/MM/YYYY"),
+            birthday: studentBirthday,
             gender: studentGender,
             email: studentEmail
         }
@@ -131,7 +126,6 @@ class Table extends Component {
 
         toast.success('Thêm thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
 
-        //this.myFormRef.reset();
 
         this.setState({
             studentName: '',
@@ -163,6 +157,7 @@ class Table extends Component {
     }
     render() {
         const calendar = (<Calendar />);
+        const {studentBirthday, studentName} =this.state 
         return (
             <div>
 
@@ -185,7 +180,7 @@ class Table extends Component {
                                     <tr key={idx}>
                                         <td className='name'>{cur.name}</td>
                                         <td>{cur.age}</td>
-                                        <td>{cur.birthday}</td>
+                                        <td>{moment (cur.birthday).format(DATE_FORMAT)}</td>
                                         <td >{cur.gender} </td>
                                         <td>{cur.email}</td>
                                         <td>
@@ -210,11 +205,18 @@ class Table extends Component {
                     <div className="addStudent">
                         <div className='left'>
                             <label htmlFor="">Name:</label>
-                            <input type="text" value={this.state.studentName} onChange={(e) => {
+                            <input type="text" minLength='8' value={this.state.studentName} onChange={(e) => {
+
+                                const nameTxt = e.target.value.replace(/\d/, '')
                                 this.setState({
-                                    studentName: e.target.value,
+                                    studentName: nameTxt,
                                     errorName: ''
                                 })
+                                if(studentName.length<8){
+                                    this.setState({
+                                        errorName:'Please input at least 8 characters!'
+                                    })
+                                }
                             }} />
                         </div>
                         {this.state.errorName &&
@@ -228,19 +230,18 @@ class Table extends Component {
                             <label htmlFor="">Age:</label>
                             <input type='text' value={this.state.studentAge} onChange={(e) => {
                                 const ageTxt= e.target.value.replace(/\D/, '')
-                                this.setState({
-                                    studentAge: ageTxt,
-                                })
+                              
                                 if(ageTxt==''){
                                     this.setState({
+                                        studentAge: ageTxt,
                                         errorAge:'Please input the correct age!'
                                     })
-                                }else{
+                                }else if(parseInt(ageTxt)<100){
                                     this.setState({
+                                        studentAge: ageTxt,
                                         errorAge:''
                                     })
-                                }
-                               
+                                }           
                             }}
                             />
                         </div>
@@ -255,7 +256,7 @@ class Table extends Component {
                             <label htmlFor="">Birthday:</label>
                             <DatePicker
                                 animation="slide-up"
-                                value={moment(this.state.studentBirthday)}
+                                value={studentBirthday ? moment(studentBirthday): null}
                                 disabled={false}
                                 calendar={calendar}
                                 onChange={this.handleChange}
@@ -264,7 +265,7 @@ class Table extends Component {
                                     ({ value }) => {
                                         
                                         return (
-                                            <input value={this.state.studentBirthday ? moment(value).format('DD/MM/YYYY') : 'dd/mm/yyyy'} />
+                                            <input value={this.state.studentBirthday ? moment(value).format(DATE_FORMAT) : DATE_FORMAT} />
                                            
                                         )
                                     }
@@ -279,19 +280,7 @@ class Table extends Component {
                             </div>
                         }
                     </div>
-                    {/* <DatePicker
-                        animation="slide-up"
-                        value={moment(this.state.studentBirthday)}
-                        disabled={false}
-                        calendar={calendar}
-                        onChange = {this.handleChange}
-                    >{
-                            ({ value }) => {
-                                return (
-                                    <input value={moment(value).format('MM-DD-YYYY')} />
-                                )
-                            }
-                        }</DatePicker> */}
+                   
                     <div className="addStudent">
                         <div className='left'>
                             <label htmlFor="">Gender:</label>
