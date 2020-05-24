@@ -7,10 +7,10 @@ import Calendar from 'rc-calendar';
 import 'rc-calendar/assets/index.css';
 import DatePicker from 'rc-calendar/lib/Picker';
 import moment from 'moment'
-
+import { DATE_FORMAT, APP_DOMAIN } from '../constants/constants'
 
 toast.configure()
-const DATE_FORMAT = 'DD/MM/YYYY'
+
 
 class Table extends Component {
     constructor(props) {
@@ -28,33 +28,33 @@ class Table extends Component {
             errorGender: "",
             errorEmail: "",
             noData: '',
-            postId:'',
+            postId: '',
         }
     }
-    componentDidMount(){
+    componentDidMount() {
         this.getListStudents()
 
     }
-    formatDataForDisplay(data){
-        return data.map(item=>{
+    formatDataForDisplay(data) {
+        return data.map(item => {
             return {
                 ...item,
-                birthday: moment(item.birthDay * 1000).format()
+                birthday: item.birthDate * 1000
             }
         })
     }
 
-    getListStudents =()=>{
-        fetch("https://5ec740ac5961a20016a9ed8d.mockapi.io/student")
-        .then(response => response.json())
-        .then(data => {
-            const formatedData = this.formatDataForDisplay(data)
-            this.setState({
-                listStudent: formatedData
+    getListStudents = () => {
+        fetch(`${APP_DOMAIN}/students`)
+            .then(response => response.json())
+            .then(data => {
+                const formatedData = this.formatDataForDisplay(data)
+                this.setState({
+                    listStudent: formatedData
+                })
             })
-        })
     }
-  
+
 
     addSucess = () => {
         return <div className="alert alert-primary" role="alert">
@@ -85,7 +85,7 @@ class Table extends Component {
         if (!studentAge) {
             hasError = true;
             errorAge = 'Please input age!'
-      
+
         }
         if (!studentBirthday) {
             hasError = true;
@@ -113,20 +113,45 @@ class Table extends Component {
             })
             return;
         }
-        const newStudent = {
-            name: studentName,
-            age: studentAge,
-            birthday: studentBirthday,
-            gender: studentGender,
-            email: studentEmail
+
+        const newStudentApi = {
+            'name': studentName,
+            'age': studentAge,
+            'gender': studentGender,
+            'email': studentEmail,
+            'birthDate': Math.floor(studentBirthday.valueOf() / 1000)
         }
-        const newListStudent = [...listStudent];
-        newListStudent.push(newStudent);
-        this.setState({ listStudent: newListStudent })
 
-        toast.success('Thêm thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+        fetch(`${APP_DOMAIN}/students`, {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newStudentApi),
+        })
+            .then(response => response.json())
+            .then(data => {
+                const newStudent = {
+                    name: studentName,
+                    age: studentAge,
+                    birthday: studentBirthday,
+                    gender: studentGender,
+                    email: studentEmail
+                }
+                const newListStudent = [...listStudent];
+                newListStudent.push(newStudent);
+                this.setState({ listStudent: newListStudent })
+                toast.success('Thêm thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+                this.setInput()
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
 
 
+    }
+
+    setInput = () => {
         this.setState({
             studentName: '',
             studentAge: '',
@@ -152,12 +177,12 @@ class Table extends Component {
 
         this.setState({
             studentBirthday: date,
-            errorBirthday:''
+            errorBirthday: ''
         })
     }
     render() {
         const calendar = (<Calendar />);
-        const {studentBirthday, studentName} =this.state 
+        const { studentBirthday, studentName } = this.state
         return (
             <div>
 
@@ -180,7 +205,7 @@ class Table extends Component {
                                     <tr key={idx}>
                                         <td className='name'>{cur.name}</td>
                                         <td>{cur.age}</td>
-                                        <td>{moment (cur.birthday).format(DATE_FORMAT)}</td>
+                                        <td>{moment(cur.birthday).format(DATE_FORMAT)}</td>
                                         <td >{cur.gender} </td>
                                         <td>{cur.email}</td>
                                         <td>
@@ -212,9 +237,9 @@ class Table extends Component {
                                     studentName: nameTxt,
                                     errorName: ''
                                 })
-                                if(studentName.length<8){
+                                if (studentName.length < 8) {
                                     this.setState({
-                                        errorName:'Please input at least 8 characters!'
+                                        errorName: 'Please input at least 8 characters!'
                                     })
                                 }
                             }} />
@@ -229,19 +254,19 @@ class Table extends Component {
                         <div className='left'>
                             <label htmlFor="">Age:</label>
                             <input type='text' value={this.state.studentAge} onChange={(e) => {
-                                const ageTxt= e.target.value.replace(/\D/, '')
-                              
-                                if(ageTxt==''){
+                                const ageTxt = e.target.value.replace(/\D/, '')
+
+                                if (ageTxt == '') {
                                     this.setState({
                                         studentAge: ageTxt,
-                                        errorAge:'Please input the correct age!'
+                                        errorAge: 'Please input the correct age!'
                                     })
-                                }else if(parseInt(ageTxt)<100){
+                                } else if (parseInt(ageTxt) < 100) {
                                     this.setState({
                                         studentAge: ageTxt,
-                                        errorAge:''
+                                        errorAge: ''
                                     })
-                                }           
+                                }
                             }}
                             />
                         </div>
@@ -256,17 +281,17 @@ class Table extends Component {
                             <label htmlFor="">Birthday:</label>
                             <DatePicker
                                 animation="slide-up"
-                                value={studentBirthday ? moment(studentBirthday): null}
+                                value={studentBirthday ? moment(studentBirthday) : null}
                                 disabled={false}
                                 calendar={calendar}
                                 onChange={this.handleChange}
                             >
                                 {
                                     ({ value }) => {
-                                        
+
                                         return (
                                             <input value={this.state.studentBirthday ? moment(value).format(DATE_FORMAT) : DATE_FORMAT} />
-                                           
+
                                         )
                                     }
                                 }
@@ -280,7 +305,7 @@ class Table extends Component {
                             </div>
                         }
                     </div>
-                   
+
                     <div className="addStudent">
                         <div className='left'>
                             <label htmlFor="">Gender:</label>
