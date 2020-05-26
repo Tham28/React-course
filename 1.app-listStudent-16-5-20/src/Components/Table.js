@@ -9,6 +9,11 @@ import DatePicker from 'rc-calendar/lib/Picker';
 import moment from 'moment'
 import { DATE_FORMAT, APP_DOMAIN } from '../constants/constants'
 
+import Button from '../Components/UI/Button/Button'
+import { Modal } from 'antd';
+import 'antd/dist/antd.css';
+import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+
 toast.configure()
 
 
@@ -27,10 +32,11 @@ class Table extends Component {
             errorBirthday: "",
             errorGender: "",
             errorEmail: "",
-            noData: '',
-            postId: '',
+            showCreateStudent: false
         }
     }
+
+
     componentDidMount() {
         this.getListStudents()
 
@@ -123,7 +129,7 @@ class Table extends Component {
         }
 
         fetch(`${APP_DOMAIN}/students`, {
-            method: 'POST', 
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -180,19 +186,43 @@ class Table extends Component {
             errorBirthday: ''
         })
     }
+
+
+    showModal = () => {
+        this.setState({
+            showCreateStudent: true,
+        });
+    };
+
+    handleOk = e => {  
+        this.setState({
+            showCreateStudent: false,
+        });
+    };
+
+    handleCancel = e => {
+        this.setState({
+            showCreateStudent: false,
+        });
+    };
+
+
     render() {
         const calendar = (<Calendar />);
         const { studentBirthday, studentName } = this.state
         return (
-            <div>
+            <div className='student-container'>
+                <div className="wr-action">
+                    <Button onClick={this.showModal} ><PlusOutlined /> Thêm sinh viên</Button>
+                </div>
 
                 <table className='listStudent'>
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Age</th>
-                            <th>Birthday</th>
-                            <th>Gender</th>
+                            <th>Họ và tên</th>
+                            <th>Tuổi</th>
+                            <th>Ngày sinh</th>
+                            <th>Giới tính</th>
                             <th>Email</th>
                             <th></th>
 
@@ -209,7 +239,7 @@ class Table extends Component {
                                         <td >{cur.gender} </td>
                                         <td>{cur.email}</td>
                                         <td>
-                                            <button onClick={() => this.clickDelete(idx)}>Xóa</button>
+                                            <button className='btn-delete' onClick={() => this.clickDelete(idx)}><DeleteOutlined /> Xóa</button>
                                         </td>
 
                                     </tr>
@@ -226,10 +256,28 @@ class Table extends Component {
                             </div>
                 }
 
-                <form >
+                
+
+                <div className='add'>
+                    <button className='btn-Add' onClick={(this.addNewStudent)}>Thêm sinh viên</button>
+                </div>
+                <div className="deteteAll">
+                    <button className='btn-deleteAll' onClick={this.deleteAllStudent}>Xóa tất cả</button>
+                </div>
+
+                <Modal
+                    title="Thêm sinh viên"
+                    visible={this.state.showCreateStudent}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                    okText='Thêm'
+                    cancelText= 'Hủy'
+                    wrapClassName='create-student-modal-container'
+                >
+                    <form >
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Name:</label>
+                            <label htmlFor="">Họ và tên:</label>
                             <input type="text" minLength='8' value={this.state.studentName} onChange={(e) => {
 
                                 const nameTxt = e.target.value.replace(/\d/, '')
@@ -252,7 +300,7 @@ class Table extends Component {
                     </div>
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Age:</label>
+                            <label htmlFor="">Tuổi:</label>
                             <input type='text' value={this.state.studentAge} onChange={(e) => {
                                 const ageTxt = e.target.value.replace(/\D/, '')
 
@@ -278,7 +326,7 @@ class Table extends Component {
                     </div>
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Birthday:</label>
+                            <label htmlFor="">Ngày sinh:</label>
                             <DatePicker
                                 animation="slide-up"
                                 value={studentBirthday ? moment(studentBirthday) : null}
@@ -308,22 +356,22 @@ class Table extends Component {
 
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Gender:</label>
+                            <label htmlFor="">Giới tính:</label>
                             <div className='gender'>
-                                <input type="radio" id="male" name="gender" defaultValue="Male" onChange={(e) => {
+                                <input type="radio" id="male" name="gender" defaultValue="Nam" onChange={(e) => {
                                     this.setState({
                                         studentGender: e.target.value,
                                         errorGender: ''
                                     })
                                 }} />
-                                <label htmlFor="male">Male</label> <br />
-                                <input type="radio" id="female" name="gender" defaultValue="Female" onChange={(e) => {
+                                <label htmlFor="male">Nam</label> <br />
+                                <input type="radio" id="female" name="gender" defaultValue="Nữ" onChange={(e) => {
                                     this.setState({
                                         studentGender: e.target.value,
                                         errorGender: ''
                                     })
                                 }} />
-                                <label htmlFor="female">Female</label>
+                                <label htmlFor="female">Nữ</label>
                             </div>
                         </div>
                         {this.state.errorGender &&
@@ -355,30 +403,12 @@ class Table extends Component {
                         }
                     </div>
                 </form>
-
-                <div className='add'>
-                    <button className='btn-Add' onClick={(this.addNewStudent)}>Thêm sinh viên</button>
-                </div>
-                <div className="deteteAll">
-                    <button className='btn-deleteAll' onClick={this.deleteAllStudent}>Xóa tất cả</button>
-                </div>
-
+                </Modal>
             </div>
         )
     }
 
 }
 
-
-// function Appss(){
-//     const notify = () => toast("Wow so easy !");
-
-//     return (
-//       <div>
-//         <button onClick={notify}>Notify !</button>
-//         <ToastContainer />
-//       </div>
-//     );
-//   }
 
 export default Table
