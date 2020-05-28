@@ -1,0 +1,38 @@
+.addStudent {
+    width: 100%;
+    max-width: 1200px;
+    margin: 10px auto;
+    display: flex;
+    flex-direction: column;
+    .left {
+        display: flex;
+       width: 80%;
+       margin:  0 auto;
+    }
+        label {
+            width: 30%;
+            font-weight: 500;
+        }
+        input {
+            width: 70%;
+            outline: 0;
+            border-radius: 5px;
+            border: none;
+            border: 1px solid #dddddd;
+            padding: 5px;
+            color:#474646 ;
+        }
+        .gender {
+            width: 20%;
+        }
+        input[type=radio] {
+            width: 20px;
+        }
+        .ant-picker{
+            outline: 0;
+            border-radius: 5px;
+            width: 70%;
+        }
+ 
+    
+}
