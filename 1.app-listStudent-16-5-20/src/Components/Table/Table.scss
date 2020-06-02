@@ -5,35 +5,34 @@
     .wr-action {
         text-align: right;
     }
-    .listStudent{
+    .listStudent {
         border: 1px solid #727071;
         width: 100%;
         margin-bottom: 0;
-        td, th {
-   
+        td,
+        th {
             text-align: left;
             padding: 8px;
-          }
-        
-          .addStudent {
+        }
+
+        .addStudent {
             width: 100%;
             max-width: 1200px;
             margin: 10px auto;
             display: flex;
             flex-direction: column;
         }
-        tbody tr:hover{
+        tbody tr:hover {
             box-shadow: 0 0 5px 2px rgb(175, 172, 172);
         }
-        thead{
+        thead {
             background-color: #727071;
             color: #fff;
-            
         }
         tr:nth-child(even) {
             background-color: #dddddd;
-          }
-          .btn-delete {
+        }
+        .btn-delete {
             border: none;
             background: rgb(248, 107, 107);
             color: #fff;
@@ -43,8 +42,27 @@
             text-transform: uppercase;
             font-size: 12px;
         }
-        .btn-delete:hover{
+        .btn-delete:hover {
             background: red;
+        }
+    }
+    .wp-pagination {
+        margin: 20px 0;
+        justify-content: flex-end;
+        display: flex;
+        align-items: center;
+        .block-current-page {
+            margin-right: 20px;
+            .anticon {
+                cursor: pointer;
+                // &:hover {
+                //     box-shadow: 0 2px 2px #727071;
+                // }
+            }
+            .page-number {
+                font-size: 16px;
+                margin: 0 10px;
+            }
         }
     }
     .no-data {
