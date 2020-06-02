@@ -1,29 +1,43 @@
 import React, { Component } from 'react';
 import './Table.scss'
-import { ToastContainer, toast } from 'react-toastify';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 import moment from 'moment'
-import Button from '../../Components/UI/Button/Button'
+import BtnAdd from '../../Components/UI/Button/BtnAdd'
+import BtnDelete from '../../Components/UI/Button/BtnDelete'
 import { DATE_FORMAT, APP_DOMAIN } from '../../constants/constants'
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, ThunderboltFilled, EditOutlined } from '@ant-design/icons';
 import AddStudent from '../AddStudent/AddStudent'
+import { Empty, Spin, Select } from 'antd';
+import EditStudent from '../EditStudent/EditStudent';
+import { toast } from 'react-toastify';
 
 toast.configure()
 
 
+
+const { Option } = Select;
 class Table extends Component {
     constructor(props) {
         super(props);
         this.state = {
             listStudent: [],
-            showCreateStudent: false
+            showCreateStudent: false,
+            showEditStudent: false,
+            isDataProgresing: false,
+            currentPage: 1,
+            pageSize: 10,
+            isDisableNextPage: false,
+            isDisablePrevPage: false
         }
     }
 
 
     componentDidMount() {
-        this.getListStudents()
+        const { pageSize, currentPage } = this.state
+        this.getListStudents(currentPage, pageSize)
+
 
     }
     formatDataForDisplay(data) {
@@ -35,221 +49,192 @@ class Table extends Component {
         })
     }
 
-    getListStudents = () => {
-        fetch(`${APP_DOMAIN}/students`)
+    getListStudents = (currentPage, pageSize) => {
+        this.setState({ isDataProgressing: true })
+        fetch(`${APP_DOMAIN}/students?page=${currentPage}&limit=${pageSize}`)
             .then(response => response.json())
             .then(data => {
+                if (data.length == 0) {
+                    this.setState({
+                        isDisableNextPage: true,
+                        isDataProgresing: false
+                    });
+                    return;
+                }
                 const formatedData = this.formatDataForDisplay(data)
                 this.setState({
-                    listStudent: formatedData
+                    listStudent: formatedData,
+                    isDataProgressing: false
                 })
             })
-    }
-
-
-    addSucess = () => {
-        return <div className="alert alert-primary" role="alert">
-            This is a primary alert—check it out!
-          </div>
-
-    }
-
-
-    addNewStudent = () => {
-        let errorName, errorAge, errorBirthday, errorGender, errorEmail;
-        const { studentName,
-            studentAge,
-            studentBirthday,
-            studentGender,
-            studentEmail,
-            listStudent
-        } = this.state
-
-        const regEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/
-        const checkingResult = regEmail.test(studentEmail);
-        let isInputValid = false;
-        let hasError = false;
-        if (!studentName) {
-            hasError = true;
-            errorName = 'Please input name!'
-        }
-        if (!studentAge) {
-            hasError = true;
-            errorAge = 'Please input age!'
-
-        }
-        if (!studentBirthday) {
-            hasError = true;
-            errorBirthday = 'Please input birthday!'
-        }
-        if (!studentGender) {
-            hasError = true;
-            errorGender = 'Please choose gender!'
-        }
-        if (!studentEmail) {
-            hasError = true;
-            errorEmail = 'Please input email!'
-        } else if (!checkingResult) {
-            hasError = true;
-            errorEmail = 'Please input the correct email!'
-        }
-
-        if (hasError) {
-            this.setState({
-                errorName,
-                errorAge,
-                errorBirthday,
-                errorGender,
-                errorEmail
+            .catch(error => {
+                toast.error(error)
+                this.setState({ isDataProgressing: true })
             })
-            return;
-        }
-
-        const newStudentApi = {
-            'name': studentName,
-            'age': studentAge,
-            'gender': studentGender,
-            'email': studentEmail,
-            'birthDate': Math.floor(studentBirthday.valueOf() / 1000)
-        }
-
-        fetch(`${APP_DOMAIN}/students`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newStudentApi),
-        })
-            .then(response => response.json())
-            .then(data => {
-                const newStudent = {
-                    name: studentName,
-                    age: studentAge,
-                    birthday: studentBirthday,
-                    gender: studentGender,
-                    email: studentEmail
-                }
-                const newListStudent = [...listStudent];
-                newListStudent.push(newStudent);
-                this.setState({ listStudent: newListStudent })
-                toast.success('Thêm thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
-                this.setInput()
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-
-
     }
 
-    setInput = () => {
-        this.setState({
-            studentName: '',
-            studentAge: '',
-            studentBirthday: '',
-            studentGender: '',
-            studentEmail: ''
-        })
-    }
 
-    clickDelete = (idx) => {
-        const { listStudent } = this.state;
-        listStudent.splice(idx, 1);
-        this.setState({ listStudent });
-    }
 
     deleteAllStudent = () => {
         const listStudent = [...this.state.listStudent];
         listStudent.splice(0, listStudent.length)
         this.setState({ listStudent })
+        // fetch(`${APP_DOMAIN}/students`, {
+        //     method: 'DELETE',
+        // })
+        //     .then(response => response.json())
     }
 
-    handleChange = (date) => {
-
-        this.setState({
-            studentBirthday: date,
-            errorBirthday: ''
+    deleteOneStudent = (id) => {
+        const { currentPage, pageSize } = this.state
+        fetch(`${APP_DOMAIN}/students/${id}`, {
+            method: 'DELETE',
         })
+            .then(() => {
+                fetch(`${APP_DOMAIN}/students?page=${currentPage}&limit=${pageSize}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        this.setState({
+                            listStudent: data,
+                            open: false
+                        })
+                        toast.success('Xóa thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+                    })
+            })
     }
-    showModal = () => {
+
+    showModalAdd = () => {
         this.setState({
             showCreateStudent: true,
+
+        });
+    };
+    showModalEdit = () => {
+        this.setState({
+            showEditStudent: true,
+
         });
     };
 
 
-    onCloseCreateStudent =()=>{
+    onCloseCreateStudent = () => {
         this.setState({
             showCreateStudent: false
         })
     }
-    
+    onCloseEditStudent = () => {
+        this.setState({
+            showEditStudent: false
+        })
+    }
+
+    handleChangePageSize = (value) => {
+        const { currentPage, pageSize } = this.state;
+        this.getListStudents(currentPage, value)
+        this.setState({
+            pageSize: value
+        })
+    }
+    onClickNextPage = () => {
+        const { currentPage, pageSize } = this.state;
+        this.getListStudents(currentPage + 1, pageSize);
+        this.setState({
+            currentPage: currentPage + 1
+        })
+    }
+
+    onClickPrevPage = () => {
+        const { currentPage, pageSize } = this.state;
+        this.getListStudents(currentPage - 1, pageSize);
+        this.setState({
+            currentPage: currentPage - 1
+        })
+    }
+
 
     render() {
-       
-        const {showCreateStudent } = this.state
+        const { Option } = Select;
+        const { showCreateStudent, showEditStudent, isDataProgressing, currentPage, pageSize } = this.state
         return (
-            <div className='student-container'>
-                <div className="wr-action">
-                    <Button onClick={this.showModal} ><PlusOutlined /> Thêm sinh viên</Button>
+            <Spin spinning={isDataProgressing}>
+                <div className='student-container'>
+                    <div className="wr-action">
+                        <BtnAdd onClick={this.showModalAdd} ><PlusOutlined /> Thêm sinh viên</BtnAdd>
+                        <BtnDelete onClick={this.deleteAllStudent}> <DeleteOutlined /> Xóa tất cả</BtnDelete>
+                    </div>
+
+                    <table className='listStudent'>
+                        <thead>
+                            <tr>
+                                <th>Họ và tên</th>
+                                <th>Tuổi</th>
+                                <th>Ngày sinh</th>
+                                <th>Giới tính</th>
+                                <th>Email</th>
+                                <th></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                this.state.listStudent.map((cur, idx) => {
+                                    return (
+                                        <tr key={cur.id}>
+                                            <td className='name'>{cur.name}</td>
+                                            <td>{cur.age}</td>
+                                            <td>{moment(cur.birthday).format(DATE_FORMAT)}</td>
+                                            <td >{cur.gender} </td>
+                                            <td>{cur.email}</td>
+                                            <td className='td-btn'>
+                                                <button className='btn-edit' onClick={this.showModalEdit} ><EditOutlined /> Sửa</button>
+                                                <button className='btn-delete' onClick={() => (this.deleteOneStudent(cur.id))}><DeleteOutlined /> Xóa</button>
+                                            </td>
+
+                                        </tr>
+                                    )
+                                })
+                            }
+
+                        </tbody>
+                    </table>
+                    {
+                        (this.state.listStudent.length === 0) &&
+                        // <div className='no-data'>
+                        //   <Empty />
+                        //         </div>
+                        <Empty />
+                    }
+
+                    <div className="wp-pagination">
+                        <div className="block-current-page">
+                            <button disabled={this.state.isDisablePrevPage} onClick={this.onClickPrevPage} > <LeftOutlined /></button>
+                            <span className='page-number'>{currentPage}</span>
+                            <button disabled={this.state.isDisableNextPage} onClick={this.onClickNextPage}><RightOutlined /></button>
+                        </div>
+                        <div className="wp-chose-pageSize">
+                            <Select value={pageSize} onChange={(value) => this.handleChangePageSize(value)}>
+                                <Option value={10}>10/page</Option>
+                                <Option value={20}>20/page</Option>
+                                <Option value={30}>30/page</Option>
+                            </Select>
+                        </div>
+                    </div>
+
+                    <AddStudent
+                        showCreateStudent={showCreateStudent}
+                        onCloseCreateStudent={this.onCloseCreateStudent}
+                    />
+
+                    <EditStudent
+                        showEditStudent={showEditStudent}
+                        onCloseEditStudent={this.onCloseEditStudent}
+                    // handleEditStudent ={this.handleEditStudent}
+                    />
+
+
                 </div>
+            </Spin>
 
-                <table className='listStudent'>
-                    <thead>
-                        <tr>
-                            <th>Họ và tên</th>
-                            <th>Tuổi</th>
-                            <th>Ngày sinh</th>
-                            <th>Giới tính</th>
-                            <th>Email</th>
-                            <th></th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            this.state.listStudent.map((cur, idx) => {
-                                return (
-                                    <tr key={idx}>
-                                        <td className='name'>{cur.name}</td>
-                                        <td>{cur.age}</td>
-                                        <td>{moment(cur.birthday).format(DATE_FORMAT)}</td>
-                                        <td >{cur.gender} </td>
-                                        <td>{cur.email}</td>
-                                        <td>
-                                            <button className='btn-delete' onClick={() => this.clickDelete(idx)}><DeleteOutlined /> Xóa</button>
-                                        </td>
-
-                                    </tr>
-                                )
-                            })
-                        }
-
-                    </tbody>
-                </table>
-                {
-                    (this.state.listStudent.length === 0) &&
-                    <div className='no-data'>
-                        No data found!
-                            </div>
-                }
-
-                
-
-                {/* <div className='add'>
-                    <button className='btn-Add' onClick={(this.addNewStudent)}>Thêm sinh viên</button>
-                </div>
-                <div className="deteteAll">
-                    <button className='btn-deleteAll' onClick={this.deleteAllStudent}>Xóa tất cả</button>
-                </div> */}
-
-                <AddStudent 
-                    showCreateStudent = {showCreateStudent}
-                    onCloseCreateStudent ={this.onCloseCreateStudent}
-                />
-
-        
-            </div>
         )
     }
 

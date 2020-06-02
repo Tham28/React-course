@@ -1,4 +1,4 @@
-.btn-primary {
+.btn-primary, .btn-delete {
     border: none;
     background: rgb(3, 151, 3);
     color: #fff;
@@ -6,10 +6,17 @@
     border-radius: 8px;
    text-transform: uppercase;
     outline: 0;
-    margin-bottom: 10px;
     cursor: pointer;
+    margin-left: 20px;
 }
 .btn-primary:hover{
     background: rgb(2, 185, 2);
     box-shadow: 0 0 5px 2px rgb(157, 241, 157);
+}
+.btn-delete {  
+    background: rgb(248, 107, 107);
+}
+.btn-delete:hover{
+    background: red;
+    box-shadow: 0 0 5px 2px rgb(241, 181, 157);
 }

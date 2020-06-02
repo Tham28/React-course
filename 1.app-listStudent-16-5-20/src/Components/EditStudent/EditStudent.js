@@ -1,17 +1,14 @@
 import React, { Component } from 'react'
-import './AddStudent.scss'
+import './EditStudent.scss'
 import { DATE_FORMAT, APP_DOMAIN } from '../../constants/constants'
 import moment from 'moment'
 import { DatePicker } from 'antd';
 import { Modal } from 'antd';
-import { toast } from 'react-toastify';
 
-toast.configure()
-class AddStudent extends Component {
+class EditStudent extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            listStudent: [],
             studentName: '',
             studentAge: '',
             studentBirthday: '',
@@ -25,153 +22,52 @@ class AddStudent extends Component {
             open: false
         }
     }
-
     static getDerivedStateFromProps(props, state) {
-        if (props.showCreateStudent !== state.open) {
+        if (props.showEditStudent !== state.open) {
             return {
-                open: props.showCreateStudent
+                open: props.showEditStudent
             }
         }
         return null;
     }
 
-    handleOk = e => {  
+    handleOk = e => {
         this.setState({
             open: false,
         });
-        this.addNewStudent()
-        // this.props.onCloseCreateStudent();
-        
+        this.props.onCloseEditStudent()
     };
 
     handleCancel = e => {
         this.setState({
             open: false,
         });
-        this.props.onCloseCreateStudent();
+        this.props.onCloseEditStudent();
     };
-    handleChangeBirthday = (date) => {
+    handleChange = (date) => {
         this.setState({
             studentBirthday: date,
-            errorBirthday: '',
-           
+            errorBirthday: ''
         })
     }
-    addNewStudent = () => {
-        let errorName, errorAge, errorBirthday, errorGender, errorEmail;
-        const { studentName,
-            studentAge,
-            studentBirthday,
-            studentGender,
-            studentEmail,
-            listStudent
-        } = this.state
 
-        const regEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/
-        const checkingResult = regEmail.test(studentEmail);
-        let isInputValid = false;
-        let hasError = false;
-        if (!studentName) {
-            hasError = true;
-            errorName = 'Please input name!'
-        }
-        if (!studentAge) {
-            hasError = true;
-            errorAge = 'Please input age!'
-
-        }
-        if (!studentBirthday) {
-            hasError = true;
-            errorBirthday = 'Please input birthday!'
-        }
-        if (!studentGender) {
-            hasError = true;
-            errorGender = 'Please choose gender!'
-        }
-        if (!studentEmail) {
-            hasError = true;
-            errorEmail = 'Please input email!'
-        } else if (!checkingResult) {
-            hasError = true;
-            errorEmail = 'Please input the correct email!'
-        }
-
-        if (hasError) {
-            this.setState({
-                errorName,
-                errorAge,
-                errorBirthday,
-                errorGender,
-                errorEmail
-            })
-            return;
-        }
-
-        const newStudentApi = {
-            'name': studentName,
-            'age': studentAge,
-            'gender': studentGender,
-            'email': studentEmail,
-            'birthDate': Math.floor(studentBirthday.valueOf() / 1000)
-        }
-
-        fetch(`${APP_DOMAIN}/students`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newStudentApi),
-        })
-            .then(response => response.json())
-            .then(data => {
-                const newStudent = {
-                    name: studentName,
-                    age: studentAge,
-                    birthday: studentBirthday,
-                    gender: studentGender,
-                    email: studentEmail
-                }
-                const newListStudent = [...listStudent];
-                newListStudent.push(newStudent);
-                this.setState({ 
-                    listStudent: newListStudent,
-                })
-                this.props.onCloseCreateStudent();
-                toast.success('Thêm thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
-                this.setInput()
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }
-
-    setInput = () => {
-        this.setState({
-            studentName: '',
-            studentAge: '',
-            studentBirthday: '',
-            studentGender: '',
-            studentEmail: '',
-        })
-    }
     render() {
         const { open, studentBirthday, studentName } = this.state;
         return (
             <Modal
-                title="Thêm sinh viên"
+                title="Sửa sinh viên"
                 visible={open}
                 onOk={this.handleOk}
                 onCancel={this.handleCancel}
-                okText='Thêm'
+                okText='Sửa'
                 cancelText='Hủy'
-                wrapClassName='create-student-modal-container'
+                wrapClassName='edit-student-modal-container'
             >
                 <form >
                     <div className="addStudent">
                         <div className='left'>
                             <label htmlFor="">Họ và tên:</label>
                             <input type="text" minLength='8' value={this.state.studentName} onChange={(e) => {
-
                                 const nameTxt = e.target.value.replace(/\d/, '')
                                 this.setState({
                                     studentName: nameTxt,
@@ -221,8 +117,7 @@ class AddStudent extends Component {
                             <label htmlFor="">Ngày sinh:</label>
                             <DatePicker
                                 format={DATE_FORMAT}
-                                onChange={this.handleChangeBirthday} 
-                            />
+                                onChange={this.onChange} />
                         </div>
                         {this.state.errorBirthday &&
                             <div className='txt-error'>
@@ -282,8 +177,7 @@ class AddStudent extends Component {
                 </form>
             </Modal>
         )
-
     }
 }
 
-export default AddStudent
+export default EditStudent

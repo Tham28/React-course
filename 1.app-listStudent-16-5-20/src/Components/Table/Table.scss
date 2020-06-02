@@ -2,18 +2,37 @@
     width: 100%;
     max-width: 1200px;
     margin: 20px auto;
+
     .wr-action {
         text-align: right;
     }
     .listStudent{
         border: 1px solid #727071;
         width: 100%;
-        margin-bottom: 0;
+        margin-top: 10px;
         td, th {
    
             text-align: left;
             padding: 8px;
+            .btn-edit {
+                margin-left: 20px;
+                border: none;
+                background-color: green;
+                color: #fff;
+                text-transform: uppercase;
+                font-size: 12px;
+                border-radius: 5px;
+                padding: 3px 15px;
+                outline:  0;
+                &:hover{
+                    background-color: rgb(3, 161, 3);
+                }
+            }
+            
           }
+          .td-btn {
+            width: 17%;
+        }
         
           .addStudent {
             width: 100%;
@@ -55,5 +74,18 @@
         padding: 5px;
         color: red;
         text-align: center;
+    }
+    .wp-pagination {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+        align-items: center;
+        .block-current-page {
+            margin-right: 13px;
+            .page-number {
+                padding: 8px;
+                font-weight: bold;
+            }
+        }
     }
 }
