@@ -7,7 +7,7 @@ import moment from 'moment'
 import BtnAdd from '../../Components/UI/Button/BtnAdd'
 import BtnDelete from '../../Components/UI/Button/BtnDelete'
 import { DATE_FORMAT, APP_DOMAIN } from '../../constants/constants'
-import { PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, ThunderboltFilled, EditOutlined } from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, EditOutlined, ExclamationCircleOutlined, WarningOutlined } from '@ant-design/icons';
 import AddStudent from '../AddStudent/AddStudent'
 import { Empty, Spin, Select, Checkbox , Modal } from 'antd';
 import EditStudent from '../EditStudent/EditStudent';
@@ -44,11 +44,8 @@ class Table extends Component {
             isDisablePrevPage: false,
             listIdsChecked: [],
 
-            checkAllStudents: false,
-            indeterminate: true,
-            checkedList: [],
-
             showConfirmDelete: false
+
         }
     }
 
@@ -62,7 +59,8 @@ class Table extends Component {
         return data.map(item => {
             return {
                 ...item,
-                birthday: item.birthDate * 1000
+                birthday: item.birthDate * 1000,
+                isChecked: false
             }
         })
     }
@@ -97,7 +95,6 @@ class Table extends Component {
     showModalAdd = () => {
         this.setState({
             showCreateStudent: true,
-
         });
     };
     showModalEdit = (e, cur) => {
@@ -152,25 +149,32 @@ class Table extends Component {
     }
 
     handleCheckedRow = (e, user) => {
-        const newListIdsChecked = [...this.state.listIdsChecked]
-        if (e.target.checked) {
-            newListIdsChecked.push(user.id)
-        } else {
-            const idx = newListIdsChecked.findIndex(item => item == user.id)
-            if (idx > -1) {
-                newListIdsChecked.splice(idx, 1)
+        const {listStudent} = this.state
+        const newListStudent = listStudent.map(item=>{
+            if(item.id == user.id){
+                if(e.target.checked){
+                    item.isChecked = true
+                }else{
+                    item.isChecked = false
+                }
             }
-        }
-        this.setState({ listIdsChecked: newListIdsChecked })
+            return item
+        })
+        this.setState({
+            listStudent: newListStudent
+        })
     }
 
     
     handleRemoveStudent = () => {
         this.setState({showConfirmDelete: true})
+        this.confirm()
     }
 
     handleOkConfirm = e => {
-        const { listIdsChecked, currentPage, pageSize } = this.state;
+        const { currentPage, pageSize, listStudent } = this.state;
+        let listIdsChecked = listStudent.filter(item => item.isChecked == true).map(cur => cur.id)
+
         Promise.all(listIdsChecked.map(id =>
             fetch(`${APP_DOMAIN}/students/${id}`, {
                 method: 'DELETE',
@@ -182,7 +186,6 @@ class Table extends Component {
                     .then(data => {
                         this.setState({
                             listStudent: data,
-                            open: false,
                             listIdsChecked: [],
                             showConfirmDelete: false,
                         })
@@ -201,24 +204,64 @@ class Table extends Component {
         });
     };
 
-    onChangeChecked = checkedList => {
-        const { listStudent } = this.state
-        this.setState({
-            checkedList,
-            indeterminate: !!checkedList.length && checkedList.length < listStudent.length,
-            checkAllStudents: checkedList.length === listStudent.length,
-        });
+    isCheckedAll =()=>{
+        const {listStudent} = this.state
+        let isCheckedAll = true
+        if(listStudent.length ==0){
+            return false
+        }
+        listStudent.forEach(item => {
+           if(!item.isChecked){
+               isCheckedAll = false
+           }
+        })
+        return isCheckedAll
     }
 
-    onCheckAllChange = e => {
-        const { listStudent } = this.state
-        this.setState({
-            checkedList: e.target.checked ? listStudent : [],
-            indeterminate: false,
-            checkAllStudents: e.target.checked,
-        });
+    handlecheckedAll =(e)=>{
+        const {listStudent}= this.state
+        if(e.target.checked){
+           const newListStudent = listStudent.map(item =>{
+               item.isChecked = true
+               return item
+           })
+           this.setState({listStudent: newListStudent})
+        }else{
+            const newListStudent = listStudent.map(item =>{
+                item.isChecked = false
+                return item
+            })
+            this.setState({listStudent: newListStudent})
+        }
+    }
 
-    };
+    showOrHideBtnDelete =()=>{
+        const {listStudent} = this.state
+        let showBtn = false
+        if(listStudent.length >0){
+            listStudent.forEach(item=>{
+                if(item.isChecked){
+                    showBtn= true
+                }
+            })
+        }
+        return showBtn
+    }
+     
+    confirm =()=>{
+        Modal.confirm({
+            title: 'Xác nhận xóa sinh viên',
+            icon: <WarningOutlined />,
+            onOk: () => { this.handleOkConfirm() }, 
+            onCancel: () => { this.handleCancelConfirm() }, 
+            content: 'Sinh viên sẽ được xóa!',
+            okText: 'Xóa',
+            cancelText: 'Hủy',
+            wrapClassName: 'modal-confirm-delete-student'
+          });
+    }
+   
+    
     render() {
         const { Option } = Select;
         const { showCreateStudent, showEditStudent, isDataProgresing, currentPage, pageSize, listIdsChecked } = this.state
@@ -228,11 +271,11 @@ class Table extends Component {
             <Spin spinning={isDataProgresing}>
                 <div className='student-container'>
                     <div className="wr-action">
-                        <BtnAdd onClick={this.showModalAdd} ><PlusOutlined /> Thêm sinh viên</BtnAdd>
+                        <BtnAdd onClick={this.showModalAdd} currentPage={currentPage}  pageSize={pageSize} ><PlusOutlined /> Thêm sinh viên</BtnAdd>
                         {
-                            listIdsChecked.length >= 1 &&
+                            this.showOrHideBtnDelete()  &&
                             <BtnDelete onClick={this.handleRemoveStudent}
-
+                                
                             > <DeleteOutlined /> Xóa
                             </BtnDelete>
 
@@ -245,9 +288,8 @@ class Table extends Component {
                             <tr>
                                 <th>
                                     <Checkbox
-                                        indeterminate={this.state.indeterminate}
-                                        onChange={this.onCheckAllChange}
-                                        checked={this.state.checkAllStudents}
+                                        onChange={(e)=> this.handlecheckedAll(e)} 
+                                        checked={this.isCheckedAll()}
                                     />
                                 </th>
                                 <th>Họ và tên</th>
@@ -264,11 +306,10 @@ class Table extends Component {
                                 this.state.listStudent.map((cur, idx) => {
                                     return (
                                         <tr key={cur.id}>
-                                            <td onChange={e => this.handleCheckedRow(e, cur)} >
+                                            <td  >
                                                 <Checkbox
-                                                    options={this.state.listStudent}
-                                                    value={this.state.checkedList}
-                                                    onChange={this.onChangeChecked}
+                                                   onChange={e => this.handleCheckedRow(e, cur)}
+                                                   checked ={cur.isChecked}
                                                 />
                                             </td>
                                             <td className='name'>{cur.name}</td>
@@ -310,6 +351,7 @@ class Table extends Component {
                     <AddStudent
                         showCreateStudent={showCreateStudent}
                         onCloseCreateStudent={this.onCloseCreateStudent}
+                       getListStudents ={this.getListStudents}
                     />
 
                     <EditStudent
@@ -322,16 +364,6 @@ class Table extends Component {
                         studentGender ={this.state.studentGender}
                       
                     />
-                    <Modal
-                        title="Xác nhận xóa sinh viên!"
-                        visible={this.state.showConfirmDelete}
-                        onOk={this.handleOkConfirm}
-                        onCancel={this.handleCancelConfirm}
-                        okText ='Xóa'
-                        cancelText ='Hủy'
-                    >
-                       <p>Xóa sinh viên đã chọn!</p>
-                    </Modal>
 
                 </div>
             </Spin>

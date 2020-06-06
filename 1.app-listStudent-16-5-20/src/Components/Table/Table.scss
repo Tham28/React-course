@@ -6,12 +6,12 @@
     .wr-action {
         text-align: right;
     }
-    .listStudent{
+    .listStudent {
         border: 1px solid #727071;
         width: 100%;
         margin-top: 10px;
-        td, th {
-   
+        td,
+        th {
             text-align: left;
             padding: 8px;
             .btn-edit {
@@ -23,36 +23,34 @@
                 font-size: 12px;
                 border-radius: 5px;
                 padding: 3px 15px;
-                outline:  0;
-                &:hover{
+                outline: 0;
+                &:hover {
                     background-color: rgb(3, 161, 3);
                 }
             }
-            
-          }
-          .td-btn {
+        }
+        .td-btn {
             width: 17%;
         }
-        
-          .addStudent {
+
+        .addStudent {
             width: 100%;
             max-width: 1200px;
             margin: 10px auto;
             display: flex;
             flex-direction: column;
         }
-        tbody tr:hover{
+        tbody tr:hover {
             box-shadow: 0 0 5px 2px rgb(175, 172, 172);
         }
-        thead{
+        thead {
             background-color: #727071;
             color: #fff;
-            
         }
         tr:nth-child(even) {
             background-color: #dddddd;
-          }
-          .btn-delete {
+        }
+        .btn-delete {
             border: none;
             background: rgb(248, 107, 107);
             color: #fff;
@@ -62,7 +60,7 @@
             text-transform: uppercase;
             font-size: 12px;
         }
-        .btn-delete:hover{
+        .btn-delete:hover {
             background: red;
         }
     }
@@ -85,6 +83,46 @@
             .page-number {
                 padding: 8px;
                 font-weight: bold;
+            }
+        }
+    }
+}
+
+.ant-modal-root {
+    .ant-modal-wrap {
+        .ant-modal-confirm-confirm {
+            .ant-modal-content {
+                border-radius: 15px;
+                border: 1px solid red;
+                .ant-modal-body {
+                    .ant-modal-confirm-body-wrapper {
+                        .ant-modal-confirm-body {
+                            .anticon {
+                                color: red;
+                            }
+                            .ant-modal-confirm-title {
+                                color: red;
+                                text-transform: uppercase;
+                                font-weight: bold;
+                            }
+                        }
+                        .ant-modal-confirm-btns {
+                            .ant-btn {
+                                border: 1px solid red;
+                                border-radius: 10px;
+                                &:hover{
+                                    color: red;
+                                }
+                            }
+                            .ant-btn-primary {
+                                background-color: red;
+                               &:hover{
+                                   color: #fff;
+                               }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

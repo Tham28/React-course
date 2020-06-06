@@ -35,13 +35,42 @@ class AddStudent extends Component {
         return null;
     }
 
+    // componentDidMount() {
+    //   this.getListStudents()
+    // }
+  
+    // formatDataForDisplay(data) {
+    //     return data.map(item => {
+    //         return {
+    //             ...item,
+    //             birthday: item.birthDate * 1000
+    //         }
+    //     })
+    // }
+    // getListStudents = () => {
+    //     this.setState({ isDataProgresing: true })
+    //     fetch(`${APP_DOMAIN}/students`)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             const formatedData = this.formatDataForDisplay(data)
+    //             this.setState({
+    //                 listStudent: formatedData,
+    //                 isDataProgresing: false
+    //             })
+    //         })
+    //         .catch(error => {
+    //             toast.error(error)
+              
+    //         })
+    // }
+
+
+
     handleOk = e => {  
         this.setState({
             open: false,
         });
         this.addNewStudent()
-        // this.props.onCloseCreateStudent();
-        
     };
 
     handleCancel = e => {
@@ -114,7 +143,7 @@ class AddStudent extends Component {
             'email': studentEmail,
             'birthDate': Math.floor(studentBirthday.valueOf() / 1000)
         }
-
+      
         fetch(`${APP_DOMAIN}/students`, {
             method: 'POST',
             headers: {
@@ -124,6 +153,7 @@ class AddStudent extends Component {
         })
             .then(response => response.json())
             .then(data => {
+             
                 const newStudent = {
                     name: studentName,
                     age: studentAge,
@@ -137,12 +167,17 @@ class AddStudent extends Component {
                     listStudent: newListStudent,
                 })
                 this.props.onCloseCreateStudent();
+
                 toast.success('Thêm thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
                 this.setInput()
+               
+            
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
+            
+        
     }
 
     setInput = () => {
@@ -242,6 +277,7 @@ class AddStudent extends Component {
                                     })
                                 }} />
                                 <label htmlFor="male">Nam</label> <br />
+
                                 <input type="radio" id="female" name="gender" defaultValue="Nữ" onChange={(e) => {
                                     this.setState({
                                         studentGender: e.target.value,
@@ -252,9 +288,7 @@ class AddStudent extends Component {
                             </div>
                         </div>
                         {this.state.errorGender &&
-
                             <div className='txt-error'>
-
                                 {this.state.errorGender}
                             </div>
                         }
