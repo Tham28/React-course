@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import './EditStudent.scss'
-import { DATE_FORMAT, APP_DOMAIN } from '../../constants/constants'
+import { DATE_FORMAT, APP_DOMAIN, MALE_VALUE, FEMALE_VALUE } from '../../constants/constants'
 import moment from 'moment'
-import { DatePicker,Radio } from 'antd';
+import { DatePicker, Radio } from 'antd';
 import { Modal } from 'antd';
 import { UserAddOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
@@ -13,12 +13,12 @@ class EditStudent extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            studentName: this.props.studentName,
-            studentAge:'',
-            studentBirthday: '',
-            studentEmail:'',
-            studentGender:'',
-          
+            studentName: "",
+            studentAge: '',
+            studentBirthday: null,
+            studentEmail: '',
+            studentGender: '',
+
             errorName: "",
             errorAge: "",
             errorBirthday: "",
@@ -33,10 +33,9 @@ class EditStudent extends Component {
                 open: props.showEditStudent,
                 studentName: props.studentName,
                 studentAge: props.studentAge,
-                studentBirthday: props.studentBirthday,
+                studentBirthday: moment(props.studentBirthday),
                 studentEmail: props.studentEmail,
                 studentGender: props.studentGender,
-               
             }
         }
         return null;
@@ -44,10 +43,6 @@ class EditStudent extends Component {
 
     handleOk = e => {
         this.editNewStudent()
-        this.setState({
-            open: false,
-        });   
-        this.props.onCloseEditStudent()
     };
 
     handleCancel = e => {
@@ -56,13 +51,13 @@ class EditStudent extends Component {
         });
         this.props.onCloseEditStudent();
     };
-    handleChangeDate = (date) => {
+    handleChangeBirthday = (date) => {
         this.setState({
             studentBirthday: date,
-            errorBirthday: ''
+            errorBirthday: '',
         })
     }
-    editNewStudent =()=>{
+    editNewStudent = () => {
         let errorName, errorAge, errorBirthday, errorGender, errorEmail;
         const { studentName,
             studentAge,
@@ -71,7 +66,7 @@ class EditStudent extends Component {
             studentEmail,
             listStudent
         } = this.state
-
+        const { getListStudents, currentPage, pageSize, studentIdSelected } = this.props;
         const regEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/
         const checkingResult = regEmail.test(studentEmail);
         let isInputValid = false;
@@ -111,7 +106,36 @@ class EditStudent extends Component {
             })
             return;
         }
-        
+
+        if (studentIdSelected) {
+            const editStudentData = {
+                'name': studentName,
+                'age': studentAge,
+                'gender': studentGender,
+                'email': studentEmail,
+                'birthDate': Math.floor(studentBirthday.valueOf() / 1000)
+            }
+
+            fetch(`${APP_DOMAIN}/students/${studentIdSelected}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(editStudentData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.props.onCloseEditStudent();
+                    if (getListStudents && typeof getListStudents == "function") {
+                        getListStudents(currentPage, pageSize);
+                    }
+                    toast.success('Thêm thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+                    this.setInput();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
     }
 
     render() {
@@ -130,13 +154,13 @@ class EditStudent extends Component {
                     <div className="addStudent">
                         <div className='left'>
                             <label htmlFor="">Họ và tên:</label>
-                            <input type="text" minLength='8'  value={studentName} onChange={(e) => {
+                            <input type="text" minLength='8' value={studentName} onChange={(e) => {
                                 const nameTxt = e.target.value.replace(/\d/, '')
                                 this.setState({
                                     studentName: nameTxt,
                                     errorName: ''
                                 })
-                              
+
                                 if (studentName.length < 8) {
                                     this.setState({
                                         errorName: 'Please input at least 8 characters!'
@@ -181,9 +205,9 @@ class EditStudent extends Component {
                             <label htmlFor="">Ngày sinh:</label>
                             <DatePicker
                                 format={DATE_FORMAT}
-                                onChange={this.handleChangeDate} 
-                                value={moment(studentBirthday)}
-                                />
+                                onChange={this.handleChangeBirthday}
+                                value={studentBirthday}
+                            />
                         </div>
                         {this.state.errorBirthday &&
                             <div className='txt-error'>
@@ -195,22 +219,22 @@ class EditStudent extends Component {
                     <div className="addStudent">
                         <div className='left'>
                             <label htmlFor="">Giới tính:</label>
-                            <div className='gender'>
-                                <input type="radio" id="male" name="gender" value="Nam" onChange={(e) => {
+                            <Radio.Group
+                                onChange={(e) => {
                                     this.setState({
                                         studentGender: e.target.value,
                                         errorGender: ''
                                     })
-                                }} />
-                                <label htmlFor="male">Nam</label> <br />
-                                <input type="radio" id="female" name="gender" value="Nữ" onChange={(e) => {
-                                    this.setState({
-                                        studentGender: e.target.value,
-                                        errorGender: ''
-                                    })
-                                }} />
-                                <label htmlFor="female">Nữ</label>
-                            </div>
+                                }}
+                                value={studentGender}
+                            >
+                                <Radio value={MALE_VALUE}>
+                                    Nam
+                                </Radio>
+                                <Radio value={FEMALE_VALUE}>
+                                    Nữ
+                                </Radio>
+                            </Radio.Group>
                         </div>
                         {this.state.errorGender &&
 

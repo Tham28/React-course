@@ -1,2 +1,5 @@
-export const DATE_FORMAT = 'DD/MM/YYYY'
-export const APP_DOMAIN ='https://5ec740ac5961a20016a9ed8d.mockapi.io'
+export const DATE_FORMAT = 'DD/MM/YYYY';
+export const APP_DOMAIN ='https://5c2b7dc6d155c40014b64113.mockapi.io';
+
+export const MALE_VALUE = "male";
+export const FEMALE_VALUE = "female";

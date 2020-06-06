@@ -9,7 +9,7 @@ import BtnDelete from '../../Components/UI/Button/BtnDelete'
 import { DATE_FORMAT, APP_DOMAIN } from '../../constants/constants'
 import { PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, EditOutlined, ExclamationCircleOutlined, WarningOutlined } from '@ant-design/icons';
 import AddStudent from '../AddStudent/AddStudent'
-import { Empty, Spin, Select, Checkbox , Modal } from 'antd';
+import { Empty, Spin, Select, Checkbox, Modal } from 'antd';
 import EditStudent from '../EditStudent/EditStudent';
 import { toast } from 'react-toastify';
 
@@ -28,12 +28,13 @@ class Table extends Component {
         this.state = {
             listStudent: [],
 
+            studentIdSelected: '',
             studentName: '',
             studentAge: '',
             studentBirthday: '',
             studentGender: '',
             studentEmail: '',
-           
+
 
             showCreateStudent: false,
             showEditStudent: false,
@@ -62,7 +63,7 @@ class Table extends Component {
                 birthday: item.birthDate * 1000,
                 isChecked: false
             }
-        })
+        }).reverse()
     }
 
     getListStudents = (currentPage, pageSize) => {
@@ -105,6 +106,7 @@ class Table extends Component {
             studentBirthday: cur.birthDate * 1000,
             studentGender: cur.gender,
             studentEmail: cur.email,
+            studentIdSelected: cur.id
         });
     };
 
@@ -149,12 +151,12 @@ class Table extends Component {
     }
 
     handleCheckedRow = (e, user) => {
-        const {listStudent} = this.state
-        const newListStudent = listStudent.map(item=>{
-            if(item.id == user.id){
-                if(e.target.checked){
+        const { listStudent } = this.state
+        const newListStudent = listStudent.map(item => {
+            if (item.id == user.id) {
+                if (e.target.checked) {
                     item.isChecked = true
-                }else{
+                } else {
                     item.isChecked = false
                 }
             }
@@ -165,9 +167,9 @@ class Table extends Component {
         })
     }
 
-    
+
     handleRemoveStudent = () => {
-        this.setState({showConfirmDelete: true})
+        this.setState({ showConfirmDelete: true })
         this.confirm()
     }
 
@@ -204,64 +206,64 @@ class Table extends Component {
         });
     };
 
-    isCheckedAll =()=>{
-        const {listStudent} = this.state
+    isCheckedAll = () => {
+        const { listStudent } = this.state
         let isCheckedAll = true
-        if(listStudent.length ==0){
+        if (listStudent.length == 0) {
             return false
         }
         listStudent.forEach(item => {
-           if(!item.isChecked){
-               isCheckedAll = false
-           }
+            if (!item.isChecked) {
+                isCheckedAll = false
+            }
         })
         return isCheckedAll
     }
 
-    handlecheckedAll =(e)=>{
-        const {listStudent}= this.state
-        if(e.target.checked){
-           const newListStudent = listStudent.map(item =>{
-               item.isChecked = true
-               return item
-           })
-           this.setState({listStudent: newListStudent})
-        }else{
-            const newListStudent = listStudent.map(item =>{
+    handlecheckedAll = (e) => {
+        const { listStudent } = this.state
+        if (e.target.checked) {
+            const newListStudent = listStudent.map(item => {
+                item.isChecked = true
+                return item
+            })
+            this.setState({ listStudent: newListStudent })
+        } else {
+            const newListStudent = listStudent.map(item => {
                 item.isChecked = false
                 return item
             })
-            this.setState({listStudent: newListStudent})
+            this.setState({ listStudent: newListStudent })
         }
     }
 
-    showOrHideBtnDelete =()=>{
-        const {listStudent} = this.state
+    showOrHideBtnDelete = () => {
+        const { listStudent } = this.state
         let showBtn = false
-        if(listStudent.length >0){
-            listStudent.forEach(item=>{
-                if(item.isChecked){
-                    showBtn= true
+        if (listStudent.length > 0) {
+            listStudent.forEach(item => {
+                if (item.isChecked) {
+                    showBtn = true
                 }
             })
         }
         return showBtn
     }
-     
-    confirm =()=>{
+
+    confirm = () => {
         Modal.confirm({
             title: 'Xác nhận xóa sinh viên',
             icon: <WarningOutlined />,
-            onOk: () => { this.handleOkConfirm() }, 
-            onCancel: () => { this.handleCancelConfirm() }, 
+            onOk: () => { this.handleOkConfirm() },
+            onCancel: () => { this.handleCancelConfirm() },
             content: 'Sinh viên sẽ được xóa!',
             okText: 'Xóa',
             cancelText: 'Hủy',
             wrapClassName: 'modal-confirm-delete-student'
-          });
+        });
     }
-   
-    
+
+
     render() {
         const { Option } = Select;
         const { showCreateStudent, showEditStudent, isDataProgresing, currentPage, pageSize, listIdsChecked } = this.state
@@ -271,11 +273,11 @@ class Table extends Component {
             <Spin spinning={isDataProgresing}>
                 <div className='student-container'>
                     <div className="wr-action">
-                        <BtnAdd onClick={this.showModalAdd} currentPage={currentPage}  pageSize={pageSize} ><PlusOutlined /> Thêm sinh viên</BtnAdd>
+                        <BtnAdd onClick={this.showModalAdd} currentPage={currentPage} pageSize={pageSize} ><PlusOutlined /> Thêm sinh viên</BtnAdd>
                         {
-                            this.showOrHideBtnDelete()  &&
+                            this.showOrHideBtnDelete() &&
                             <BtnDelete onClick={this.handleRemoveStudent}
-                                
+
                             > <DeleteOutlined /> Xóa
                             </BtnDelete>
 
@@ -288,7 +290,7 @@ class Table extends Component {
                             <tr>
                                 <th>
                                     <Checkbox
-                                        onChange={(e)=> this.handlecheckedAll(e)} 
+                                        onChange={(e) => this.handlecheckedAll(e)}
                                         checked={this.isCheckedAll()}
                                     />
                                 </th>
@@ -308,8 +310,8 @@ class Table extends Component {
                                         <tr key={cur.id}>
                                             <td  >
                                                 <Checkbox
-                                                   onChange={e => this.handleCheckedRow(e, cur)}
-                                                   checked ={cur.isChecked}
+                                                    onChange={e => this.handleCheckedRow(e, cur)}
+                                                    checked={cur.isChecked}
                                                 />
                                             </td>
                                             <td className='name'>{cur.name}</td>
@@ -347,22 +349,29 @@ class Table extends Component {
                             </Select>
                         </div>
                     </div>
-
-                    <AddStudent
-                        showCreateStudent={showCreateStudent}
-                        onCloseCreateStudent={this.onCloseCreateStudent}
-                       getListStudents ={this.getListStudents}
-                    />
+                    {
+                        showCreateStudent &&
+                        <AddStudent
+                            showCreateStudent={showCreateStudent}
+                            onCloseCreateStudent={this.onCloseCreateStudent}
+                            getListStudents={this.getListStudents}
+                            currentPage={currentPage}
+                            pageSize={pageSize}
+                        />
+                    }
 
                     <EditStudent
                         showEditStudent={showEditStudent}
                         onCloseEditStudent={this.onCloseEditStudent}
-                        studentName = {this.state.studentName}
-                        studentAge ={this.state.studentAge}
-                        studentBirthday ={this.state.studentBirthday}
-                        studentEmail ={this.state.studentEmail}
-                        studentGender ={this.state.studentGender}
-                      
+                        studentName={this.state.studentName}
+                        studentAge={this.state.studentAge}
+                        studentBirthday={this.state.studentBirthday}
+                        studentEmail={this.state.studentEmail}
+                        studentGender={this.state.studentGender}
+                        studentIdSelected={this.state.studentIdSelected}
+                        getListStudents={this.getListStudents}
+                        currentPage={currentPage}
+                        pageSize={pageSize}
                     />
 
                 </div>
