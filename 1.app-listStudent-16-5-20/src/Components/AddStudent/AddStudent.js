@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import './AddStudent.scss'
-import { DATE_FORMAT, APP_DOMAIN } from '../../constants/constants'
+import { DATE_FORMAT, APP_DOMAIN, MALE, FEMALE } from '../../constants/constants'
 import moment from 'moment'
-import { DatePicker } from 'antd';
+import { DatePicker, Radio } from 'antd';
 import { Modal } from 'antd';
 import { toast } from 'react-toastify';
 
@@ -14,7 +14,7 @@ class AddStudent extends Component {
             listStudent: [],
             studentName: '',
             studentAge: '',
-            studentBirthday: '',
+            studentBirthday: null,
             studentGender: '',
             studentEmail: '',
             errorName: "",
@@ -35,38 +35,7 @@ class AddStudent extends Component {
         return null;
     }
 
-    // componentDidMount() {
-    //   this.getListStudents()
-    // }
-  
-    // formatDataForDisplay(data) {
-    //     return data.map(item => {
-    //         return {
-    //             ...item,
-    //             birthday: item.birthDate * 1000
-    //         }
-    //     })
-    // }
-    // getListStudents = () => {
-    //     this.setState({ isDataProgresing: true })
-    //     fetch(`${APP_DOMAIN}/students`)
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             const formatedData = this.formatDataForDisplay(data)
-    //             this.setState({
-    //                 listStudent: formatedData,
-    //                 isDataProgresing: false
-    //             })
-    //         })
-    //         .catch(error => {
-    //             toast.error(error)
-              
-    //         })
-    // }
-
-
-
-    handleOk = e => {  
+    handleOk = e => {
         this.setState({
             open: false,
         });
@@ -83,7 +52,7 @@ class AddStudent extends Component {
         this.setState({
             studentBirthday: date,
             errorBirthday: '',
-           
+
         })
     }
     addNewStudent = () => {
@@ -93,8 +62,10 @@ class AddStudent extends Component {
             studentBirthday,
             studentGender,
             studentEmail,
-            listStudent
+            listStuden
         } = this.state
+
+        const { getListStudents, currentPage, pageSize } = this.props
 
         const regEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/
         const checkingResult = regEmail.test(studentEmail);
@@ -136,48 +107,37 @@ class AddStudent extends Component {
             return;
         }
 
-        const newStudentApi = {
+        const newStudent = {
             'name': studentName,
             'age': studentAge,
             'gender': studentGender,
             'email': studentEmail,
             'birthDate': Math.floor(studentBirthday.valueOf() / 1000)
         }
-      
-        fetch(`${APP_DOMAIN}/students`, {
+
+
+        fetch(`${APP_DOMAIN}/students?page=${currentPage}&limit=${pageSize}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(newStudentApi),
+            body: JSON.stringify(newStudent),
         })
             .then(response => response.json())
             .then(data => {
-             
-                const newStudent = {
-                    name: studentName,
-                    age: studentAge,
-                    birthday: studentBirthday,
-                    gender: studentGender,
-                    email: studentEmail
-                }
-                const newListStudent = [...listStudent];
-                newListStudent.push(newStudent);
-                this.setState({ 
-                    listStudent: newListStudent,
-                })
                 this.props.onCloseCreateStudent();
-
+                if (getListStudents && typeof getListStudents == 'function') {
+                    getListStudents(currentPage, pageSize)
+                }
                 toast.success('Thêm thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
                 this.setInput()
-               
-            
+
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
-            
-        
+
+
     }
 
     setInput = () => {
@@ -190,7 +150,7 @@ class AddStudent extends Component {
         })
     }
     render() {
-        const { open, studentBirthday, studentName } = this.state;
+        const { open, studentBirthday, studentName, studentGender } = this.state;
         return (
             <Modal
                 title="Thêm sinh viên"
@@ -256,7 +216,8 @@ class AddStudent extends Component {
                             <label htmlFor="">Ngày sinh:</label>
                             <DatePicker
                                 format={DATE_FORMAT}
-                                onChange={this.handleChangeBirthday} 
+                                onChange={this.handleChangeBirthday}
+                                value={studentBirthday}
                             />
                         </div>
                         {this.state.errorBirthday &&
@@ -270,22 +231,22 @@ class AddStudent extends Component {
                         <div className='left'>
                             <label htmlFor="">Giới tính:</label>
                             <div className='gender'>
-                                <input type="radio" id="male" name="gender" defaultValue="Nam" onChange={(e) => {
+                                <Radio.Group onChange={(e) => {
                                     this.setState({
                                         studentGender: e.target.value,
                                         errorGender: ''
                                     })
-                                }} />
-                                <label htmlFor="male">Nam</label> <br />
-
-                                <input type="radio" id="female" name="gender" defaultValue="Nữ" onChange={(e) => {
-                                    this.setState({
-                                        studentGender: e.target.value,
-                                        errorGender: ''
-                                    })
-                                }} />
-                                <label htmlFor="female">Nữ</label>
+                                }}
+                                    value={studentGender}>
+                                    <Radio value={MALE}>
+                                        Nam
+                                    </Radio>
+                                    <Radio value={FEMALE}>
+                                        Nữ
+                                    </Radio>
+                                </Radio.Group>
                             </div>
+                            
                         </div>
                         {this.state.errorGender &&
                             <div className='txt-error'>

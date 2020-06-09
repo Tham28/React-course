@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import './EditStudent.scss'
-import { DATE_FORMAT, APP_DOMAIN } from '../../constants/constants'
+import { DATE_FORMAT, APP_DOMAIN, MALE, FEMALE } from '../../constants/constants'
 import moment from 'moment'
-import { DatePicker,Radio } from 'antd';
+import { DatePicker, Radio } from 'antd';
 import { Modal } from 'antd';
 import { UserAddOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
@@ -14,17 +14,18 @@ class EditStudent extends Component {
         super(props)
         this.state = {
             studentName: this.props.studentName,
-            studentAge:'',
-            studentBirthday: '',
-            studentEmail:'',
-            studentGender:'',
-          
+            studentAge: '',
+            studentBirthday: null,
+            studentEmail: '',
+            studentGender: '',
+
             errorName: "",
             errorAge: "",
             errorBirthday: "",
             errorGender: "",
             errorEmail: "",
             open: false
+            
         }
     }
     static getDerivedStateFromProps(props, state) {
@@ -33,10 +34,10 @@ class EditStudent extends Component {
                 open: props.showEditStudent,
                 studentName: props.studentName,
                 studentAge: props.studentAge,
-                studentBirthday: props.studentBirthday,
+                studentBirthday: moment(props.studentBirthday),
                 studentEmail: props.studentEmail,
                 studentGender: props.studentGender,
-               
+                studentIsSelected: props.studentIsSelected
             }
         }
         return null;
@@ -44,9 +45,9 @@ class EditStudent extends Component {
 
     handleOk = e => {
         this.editNewStudent()
-        this.setState({
-            open: false,
-        });   
+        // this.setState({
+        //     open: false,
+        // });
         this.props.onCloseEditStudent()
     };
 
@@ -56,13 +57,13 @@ class EditStudent extends Component {
         });
         this.props.onCloseEditStudent();
     };
-    handleChangeDate = (date) => {
+    handleChangeBirthday = (date) => {
         this.setState({
             studentBirthday: date,
             errorBirthday: ''
         })
     }
-    editNewStudent =()=>{
+    editNewStudent = () => {
         let errorName, errorAge, errorBirthday, errorGender, errorEmail;
         const { studentName,
             studentAge,
@@ -71,6 +72,8 @@ class EditStudent extends Component {
             studentEmail,
             listStudent
         } = this.state
+
+        const {getListStudents, pageSize, currentPage, studentIsSelected } =this.props
 
         const regEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/
         const checkingResult = regEmail.test(studentEmail);
@@ -111,8 +114,41 @@ class EditStudent extends Component {
             })
             return;
         }
-        
+        if(studentIsSelected){
+            const editStudentData ={
+                'name': studentName,
+                'age': studentAge,
+                'email': studentEmail,
+                'birthDate': Math.floor(studentBirthday.valueOf()/1000),
+                'gender': studentGender
+
+            }
+            fetch(`${APP_DOMAIN}/students/${studentIsSelected}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(editStudentData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    this.props.onCloseEditStudent();
+    
+                    if (getListStudents && typeof getListStudents == 'function') {
+                        getListStudents(currentPage, pageSize)
+                    }
+                    toast.success('Thêm thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
+                
+    
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+    
+        }
     }
+
+   
 
     render() {
         const { open, studentBirthday, studentName, studentAge, studentEmail, studentGender } = this.state;
@@ -130,13 +166,13 @@ class EditStudent extends Component {
                     <div className="addStudent">
                         <div className='left'>
                             <label htmlFor="">Họ và tên:</label>
-                            <input type="text" minLength='8'  value={studentName} onChange={(e) => {
+                            <input type="text" minLength='8' value={studentName} onChange={(e) => {
                                 const nameTxt = e.target.value.replace(/\d/, '')
                                 this.setState({
                                     studentName: nameTxt,
                                     errorName: ''
                                 })
-                              
+
                                 if (studentName.length < 8) {
                                     this.setState({
                                         errorName: 'Please input at least 8 characters!'
@@ -181,9 +217,9 @@ class EditStudent extends Component {
                             <label htmlFor="">Ngày sinh:</label>
                             <DatePicker
                                 format={DATE_FORMAT}
-                                onChange={this.handleChangeDate} 
-                                value={moment(studentBirthday)}
-                                />
+                                onChange={this.handleChangeBirthday}
+                                value={studentBirthday}
+                            />
                         </div>
                         {this.state.errorBirthday &&
                             <div className='txt-error'>
@@ -196,20 +232,20 @@ class EditStudent extends Component {
                         <div className='left'>
                             <label htmlFor="">Giới tính:</label>
                             <div className='gender'>
-                                <input type="radio" id="male" name="gender" value="Nam" onChange={(e) => {
+                                <Radio.Group onChange={(e) => {
                                     this.setState({
                                         studentGender: e.target.value,
                                         errorGender: ''
                                     })
-                                }} />
-                                <label htmlFor="male">Nam</label> <br />
-                                <input type="radio" id="female" name="gender" value="Nữ" onChange={(e) => {
-                                    this.setState({
-                                        studentGender: e.target.value,
-                                        errorGender: ''
-                                    })
-                                }} />
-                                <label htmlFor="female">Nữ</label>
+                                }}
+                                    value={studentGender}>
+                                    <Radio value={MALE}>
+                                        Nam
+                                    </Radio>
+                                    <Radio value={FEMALE}>
+                                        Nữ
+                                    </Radio>
+                                </Radio.Group>
                             </div>
                         </div>
                         {this.state.errorGender &&

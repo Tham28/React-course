@@ -6,21 +6,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment'
 import BtnAdd from '../../Components/UI/Button/BtnAdd'
 import BtnDelete from '../../Components/UI/Button/BtnDelete'
-import { DATE_FORMAT, APP_DOMAIN } from '../../constants/constants'
-import { PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, EditOutlined, ExclamationCircleOutlined, WarningOutlined } from '@ant-design/icons';
+import { DATE_FORMAT, APP_DOMAIN, MALE, FEMALE } from '../../constants/constants'
+import { PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, EditOutlined, WarningOutlined } from '@ant-design/icons';
 import AddStudent from '../AddStudent/AddStudent'
 import { Empty, Spin, Select, Checkbox , Modal } from 'antd';
 import EditStudent from '../EditStudent/EditStudent';
 import { toast } from 'react-toastify';
 
 toast.configure()
-
-
-const CheckboxGroup = Checkbox.Group;
 const { Option } = Select;
-
-
-
 
 class Table extends Component {
     constructor(props) {
@@ -33,8 +27,8 @@ class Table extends Component {
             studentBirthday: '',
             studentGender: '',
             studentEmail: '',
+            studentIsSelected: '',
            
-
             showCreateStudent: false,
             showEditStudent: false,
             isDataProgresing: false,
@@ -62,7 +56,7 @@ class Table extends Component {
                 birthday: item.birthDate * 1000,
                 isChecked: false
             }
-        })
+        }).reverse()
     }
 
     getListStudents = (currentPage, pageSize) => {
@@ -73,7 +67,7 @@ class Table extends Component {
                 if (data.length === 0) {
                     this.setState({
                         isDisableNextPage: true,
-                        isDataProgresing: false
+                        isDataProgresing: false,    
                     });
                     return;
                 }
@@ -90,8 +84,6 @@ class Table extends Component {
     }
 
 
-
-
     showModalAdd = () => {
         this.setState({
             showCreateStudent: true,
@@ -105,7 +97,9 @@ class Table extends Component {
             studentBirthday: cur.birthDate * 1000,
             studentGender: cur.gender,
             studentEmail: cur.email,
+            studentIsSelected: cur.id
         });
+        console.log(this.state.studentIsSelected)
     };
 
 
@@ -136,7 +130,8 @@ class Table extends Component {
         const { currentPage, pageSize } = this.state;
         this.getListStudents(currentPage + 1, pageSize);
         this.setState({
-            currentPage: currentPage + 1
+            currentPage: currentPage + 1,
+            isDisableNextPage: false
         })
     }
 
@@ -144,7 +139,10 @@ class Table extends Component {
         const { currentPage, pageSize } = this.state;
         if (currentPage > 1) {
             this.getListStudents(currentPage - 1, pageSize);
-            this.setState({ currentPage: currentPage - 1 });
+            this.setState({ 
+                currentPage: currentPage - 1,
+                isDisableNextPage: false
+             });
         }
     }
 
@@ -189,6 +187,8 @@ class Table extends Component {
                             listIdsChecked: [],
                             showConfirmDelete: false,
                         })
+                        this.getListStudents(currentPage, pageSize)
+
                     })
             })
             .catch(error => {
@@ -347,13 +347,18 @@ class Table extends Component {
                             </Select>
                         </div>
                     </div>
-
-                    <AddStudent
+                    {
+                        showCreateStudent && 
+                        <AddStudent
                         showCreateStudent={showCreateStudent}
                         onCloseCreateStudent={this.onCloseCreateStudent}
-                       getListStudents ={this.getListStudents}
-                    />
-
+                        getListStudents ={this.getListStudents}
+                        currentPage ={this.state.currentPage}
+                        pageSize ={this.state.pageSize}
+                        />
+                    }
+                    
+                    
                     <EditStudent
                         showEditStudent={showEditStudent}
                         onCloseEditStudent={this.onCloseEditStudent}
@@ -362,6 +367,10 @@ class Table extends Component {
                         studentBirthday ={this.state.studentBirthday}
                         studentEmail ={this.state.studentEmail}
                         studentGender ={this.state.studentGender}
+                        studentIsSelected ={this.state.studentIsSelected}
+                        getListStudents ={this.getListStudents}
+                        currentPage ={this.state.currentPage}
+                        pageSize ={this.state.pageSize}
                       
                     />
 
