@@ -5,6 +5,7 @@ import moment from 'moment'
 import { DatePicker, Radio } from 'antd';
 import { Modal } from 'antd';
 import { toast } from 'react-toastify';
+import { Translation } from 'react-i18next';
 
 toast.configure()
 class AddStudent extends Component {
@@ -153,18 +154,35 @@ class AddStudent extends Component {
         const { open, studentBirthday, studentName, studentGender } = this.state;
         return (
             <Modal
-                title="Thêm sinh viên"
+                title={<Translation>
+                    {
+                        t => <span>{t("addStudent")}</span>
+                    }
+                </Translation>}
                 visible={open}
                 onOk={this.handleOk}
                 onCancel={this.handleCancel}
-                okText='Thêm'
-                cancelText='Hủy'
+                okText={<Translation>
+                    {
+                        t => <span>{t("btnAdd")}</span>
+                    }
+                </Translation>}
+                cancelText={<Translation>
+                    {
+                        t => <span>{t("btnCancel")}</span>
+                    }
+                </Translation>}
                 wrapClassName='create-student-modal-container'
             >
                 <form >
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Họ và tên:</label>
+                            <label htmlFor="">
+                                <Translation>
+                                    {
+                                        t => <span>{t("Fullname")}</span>
+                                    }
+                                </Translation></label>
                             <input type="text" minLength='8' value={this.state.studentName} onChange={(e) => {
 
                                 const nameTxt = e.target.value.replace(/\d/, '')
@@ -187,7 +205,12 @@ class AddStudent extends Component {
                     </div>
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Tuổi:</label>
+                            <label htmlFor="">
+                                <Translation>
+                                    {
+                                        t => <span>{t("age")}</span>
+                                    }
+                                </Translation></label>
                             <input type='text' value={this.state.studentAge} onChange={(e) => {
                                 const ageTxt = e.target.value.replace(/\D/, '')
 
@@ -213,7 +236,11 @@ class AddStudent extends Component {
                     </div>
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Ngày sinh:</label>
+                            <label htmlFor=""><Translation>
+                                {
+                                    t => <span>{t("birthday")}</span>
+                                }
+                            </Translation></label>
                             <DatePicker
                                 format={DATE_FORMAT}
                                 onChange={this.handleChangeBirthday}
@@ -229,7 +256,11 @@ class AddStudent extends Component {
 
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Giới tính:</label>
+                            <label htmlFor=""><Translation>
+                                {
+                                    t => <span>{t("gender")}</span>
+                                }
+                            </Translation></label>
                             <div className='gender'>
                                 <Radio.Group onChange={(e) => {
                                     this.setState({
@@ -239,14 +270,22 @@ class AddStudent extends Component {
                                 }}
                                     value={studentGender}>
                                     <Radio value={MALE}>
-                                        Nam
+                                        <Translation>
+                                            {
+                                                t => <span>{t("male")}</span>
+                                            }
+                                        </Translation>
                                     </Radio>
                                     <Radio value={FEMALE}>
-                                        Nữ
+                                        <Translation>
+                                            {
+                                                t => <span>{t("feMale")}</span>
+                                            }
+                                        </Translation>
                                     </Radio>
                                 </Radio.Group>
                             </div>
-                            
+
                         </div>
                         {this.state.errorGender &&
                             <div className='txt-error'>
@@ -258,7 +297,11 @@ class AddStudent extends Component {
 
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Email:</label>
+                            <label htmlFor=""><Translation>
+                                {
+                                    t => <span>{t("email")}</span>
+                                }
+                            </Translation></label>
                             <input type="text" value={this.state.studentEmail} onChange={(e) => {
                                 this.setState({
                                     studentEmail: e.target.value,

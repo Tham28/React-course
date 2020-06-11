@@ -7,14 +7,24 @@ import moment from 'moment'
 import BtnAdd from '../../Components/UI/Button/BtnAdd'
 import BtnDelete from '../../Components/UI/Button/BtnDelete'
 import { DATE_FORMAT, APP_DOMAIN, MALE, FEMALE } from '../../constants/constants'
-import { PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, EditOutlined, WarningOutlined } from '@ant-design/icons';
+import {
+    PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, EditOutlined, WarningOutlined,
+    ProfileOutlined, FundProjectionScreenOutlined
+} from '@ant-design/icons';
 import AddStudent from '../AddStudent/AddStudent'
-import { Empty, Spin, Select, Checkbox , Modal } from 'antd';
+import { Empty, Spin, Select, Checkbox, Modal, Button, Menu } from 'antd';
 import EditStudent from '../EditStudent/EditStudent';
 import { toast } from 'react-toastify';
+import hat from '../../images/hat-graduate.png';
+
+import i18n from '../../i18n'
+import ChangeLocale from '../ChangeLocale/ChangeLocale'
+
+import { Translation } from 'react-i18next';
 
 toast.configure()
 const { Option } = Select;
+const { SubMenu } = Menu;
 
 class Table extends Component {
     constructor(props) {
@@ -28,7 +38,7 @@ class Table extends Component {
             studentGender: '',
             studentEmail: '',
             studentIsSelected: '',
-           
+
             showCreateStudent: false,
             showEditStudent: false,
             isDataProgresing: false,
@@ -38,7 +48,8 @@ class Table extends Component {
             isDisablePrevPage: false,
             listIdsChecked: [],
 
-            showConfirmDelete: false
+            showConfirmDelete: false,
+            currentMenu: 'project',
 
         }
     }
@@ -56,7 +67,7 @@ class Table extends Component {
                 birthday: item.birthDate * 1000,
                 isChecked: false
             }
-        }).reverse()
+        })
     }
 
     getListStudents = (currentPage, pageSize) => {
@@ -67,7 +78,7 @@ class Table extends Component {
                 if (data.length === 0) {
                     this.setState({
                         isDisableNextPage: true,
-                        isDataProgresing: false,    
+                        isDataProgresing: false,
                     });
                     return;
                 }
@@ -139,20 +150,20 @@ class Table extends Component {
         const { currentPage, pageSize } = this.state;
         if (currentPage > 1) {
             this.getListStudents(currentPage - 1, pageSize);
-            this.setState({ 
+            this.setState({
                 currentPage: currentPage - 1,
                 isDisableNextPage: false
-             });
+            });
         }
     }
 
     handleCheckedRow = (e, user) => {
-        const {listStudent} = this.state
-        const newListStudent = listStudent.map(item=>{
-            if(item.id == user.id){
-                if(e.target.checked){
+        const { listStudent } = this.state
+        const newListStudent = listStudent.map(item => {
+            if (item.id == user.id) {
+                if (e.target.checked) {
                     item.isChecked = true
-                }else{
+                } else {
                     item.isChecked = false
                 }
             }
@@ -163,9 +174,9 @@ class Table extends Component {
         })
     }
 
-    
+
     handleRemoveStudent = () => {
-        this.setState({showConfirmDelete: true})
+        this.setState({ showConfirmDelete: true })
         this.confirm()
     }
 
@@ -204,82 +215,140 @@ class Table extends Component {
         });
     };
 
-    isCheckedAll =()=>{
-        const {listStudent} = this.state
+    isCheckedAll = () => {
+        const { listStudent } = this.state
         let isCheckedAll = true
-        if(listStudent.length ==0){
+        if (listStudent.length == 0) {
             return false
         }
         listStudent.forEach(item => {
-           if(!item.isChecked){
-               isCheckedAll = false
-           }
+            if (!item.isChecked) {
+                isCheckedAll = false
+            }
         })
         return isCheckedAll
     }
 
-    handlecheckedAll =(e)=>{
-        const {listStudent}= this.state
-        if(e.target.checked){
-           const newListStudent = listStudent.map(item =>{
-               item.isChecked = true
-               return item
-           })
-           this.setState({listStudent: newListStudent})
-        }else{
-            const newListStudent = listStudent.map(item =>{
+    handlecheckedAll = (e) => {
+        const { listStudent } = this.state
+        if (e.target.checked) {
+            const newListStudent = listStudent.map(item => {
+                item.isChecked = true
+                return item
+            })
+            this.setState({ listStudent: newListStudent })
+        } else {
+            const newListStudent = listStudent.map(item => {
                 item.isChecked = false
                 return item
             })
-            this.setState({listStudent: newListStudent})
+            this.setState({ listStudent: newListStudent })
         }
     }
 
-    showOrHideBtnDelete =()=>{
-        const {listStudent} = this.state
+    showOrHideBtnDelete = () => {
+        const { listStudent } = this.state
         let showBtn = false
-        if(listStudent.length >0){
-            listStudent.forEach(item=>{
-                if(item.isChecked){
-                    showBtn= true
+        if (listStudent.length > 0) {
+            listStudent.forEach(item => {
+                if (item.isChecked) {
+                    showBtn = true
                 }
             })
         }
         return showBtn
     }
-     
-    confirm =()=>{
+
+    confirm = () => {
         Modal.confirm({
-            title: 'Xác nhận xóa sinh viên',
+            title: <Translation>
+                {
+                    t => <span>{t("deleteStudent")}</span>
+                }
+            </Translation>,
             icon: <WarningOutlined />,
-            onOk: () => { this.handleOkConfirm() }, 
-            onCancel: () => { this.handleCancelConfirm() }, 
-            content: 'Sinh viên sẽ được xóa!',
-            okText: 'Xóa',
-            cancelText: 'Hủy',
+            onOk: () => { this.handleOkConfirm() },
+            onCancel: () => { this.handleCancelConfirm() },
+            content: <Translation>
+                {
+                    t => <span>{t("deleteContent")}</span>
+                }
+            </Translation>,
+            okText: <Translation>
+                {
+                    t => <span>{t("delete")}</span>
+                }
+            </Translation>,
+            cancelText: <Translation>
+                {
+                    t => <span>{t("btnCancel")}</span>
+                }
+            </Translation>,
             wrapClassName: 'modal-confirm-delete-student'
-          });
+        });
     }
-   
-    
+
+    handleClickMenu = e => {
+        console.log('click ', e);
+        this.setState({
+            currentMenu: e.key,
+        });
+    };
+
     render() {
         const { Option } = Select;
         const { showCreateStudent, showEditStudent, isDataProgresing, currentPage, pageSize, listIdsChecked } = this.state
 
-
         return (
             <Spin spinning={isDataProgresing}>
+                <div className="header">
+                    <div className="container">
+                        <div className="logo">
+                            <img className='img-logo' src={hat} alt="" />
+                            <div className="manage">student manager</div>
+                        </div>
+                        <div className="title">
+                            <Menu onChange={this.handleClickMenu} selectedKeys={[this.state.currentMenu]} mode="horizontal">
+                                <Menu.Item key="home" icon={<ProfileOutlined />}>
+                                    <Translation>
+                                        {
+                                            t => <span>{t("home")}</span>
+                                        }
+                                    </Translation>
+                                </Menu.Item>
+                                <Menu.Item key="project" icon={<FundProjectionScreenOutlined />}>
+                                <Translation>
+                                        {
+                                            t => <span>{t("project")}</span>
+                                        }
+                                    </Translation>
+                                </Menu.Item>
+                            </Menu>
+
+
+                        </div>
+                        <ChangeLocale />
+                    </div>
+                </div>
                 <div className='student-container'>
                     <div className="wr-action">
-                        <BtnAdd onClick={this.showModalAdd} currentPage={currentPage}  pageSize={pageSize} ><PlusOutlined /> Thêm sinh viên</BtnAdd>
+                        <BtnAdd onClick={this.showModalAdd} currentPage={currentPage} pageSize={pageSize} ><PlusOutlined />
+                            <Translation>
+                                {
+                                    t => <span>{t("addStudent")}</span>
+                                }
+                            </Translation>
+                        </BtnAdd>
                         {
-                            this.showOrHideBtnDelete()  &&
+                            this.showOrHideBtnDelete() &&
                             <BtnDelete onClick={this.handleRemoveStudent}
-                                
-                            > <DeleteOutlined /> Xóa
+                            > <DeleteOutlined />
+                                <Translation>
+                                    {
+                                        t => <span>{t("delete")}</span>
+                                    }
+                                </Translation>
                             </BtnDelete>
-
-
                         }
                     </div>
 
@@ -288,15 +357,35 @@ class Table extends Component {
                             <tr>
                                 <th>
                                     <Checkbox
-                                        onChange={(e)=> this.handlecheckedAll(e)} 
+                                        onChange={(e) => this.handlecheckedAll(e)}
                                         checked={this.isCheckedAll()}
                                     />
                                 </th>
-                                <th>Họ và tên</th>
-                                <th>Tuổi</th>
-                                <th>Ngày sinh</th>
-                                <th>Giới tính</th>
-                                <th>Email</th>
+                                <th><Translation>
+                                    {
+                                        t => <span>{t("Fullname")}</span>
+                                    }
+                                </Translation></th>
+                                <th><Translation>
+                                    {
+                                        t => <span>{t("age")}</span>
+                                    }
+                                </Translation></th>
+                                <th><Translation>
+                                    {
+                                        t => <span>{t("birthday")}</span>
+                                    }
+                                </Translation></th>
+                                <th><Translation>
+                                    {
+                                        t => <span>{t("gender")}</span>
+                                    }
+                                </Translation></th>
+                                <th><Translation>
+                                    {
+                                        t => <span>{t("email")}</span>
+                                    }
+                                </Translation></th>
                                 <th></th>
 
                             </tr>
@@ -308,8 +397,8 @@ class Table extends Component {
                                         <tr key={cur.id}>
                                             <td  >
                                                 <Checkbox
-                                                   onChange={e => this.handleCheckedRow(e, cur)}
-                                                   checked ={cur.isChecked}
+                                                    onChange={e => this.handleCheckedRow(e, cur)}
+                                                    checked={cur.isChecked}
                                                 />
                                             </td>
                                             <td className='name'>{cur.name}</td>
@@ -318,7 +407,13 @@ class Table extends Component {
                                             <td >{cur.gender} </td>
                                             <td>{cur.email}</td>
                                             <td className='td-btn' >
-                                                <button className='btn-edit' onClick={e => this.showModalEdit(e, cur)} ><EditOutlined /> Sửa</button>
+                                                <button className='btn-edit' onClick={e => this.showModalEdit(e, cur)} ><EditOutlined />
+                                                    <Translation>
+                                                        {
+                                                            t => <span>{t("edit")}</span>
+                                                        }
+                                                    </Translation>
+                                                </button>
                                             </td>
 
                                         </tr>
@@ -348,30 +443,30 @@ class Table extends Component {
                         </div>
                     </div>
                     {
-                        showCreateStudent && 
+                        showCreateStudent &&
                         <AddStudent
-                        showCreateStudent={showCreateStudent}
-                        onCloseCreateStudent={this.onCloseCreateStudent}
-                        getListStudents ={this.getListStudents}
-                        currentPage ={this.state.currentPage}
-                        pageSize ={this.state.pageSize}
+                            showCreateStudent={showCreateStudent}
+                            onCloseCreateStudent={this.onCloseCreateStudent}
+                            getListStudents={this.getListStudents}
+                            currentPage={this.state.currentPage}
+                            pageSize={this.state.pageSize}
                         />
                     }
-                    
-                    
+
+
                     <EditStudent
                         showEditStudent={showEditStudent}
                         onCloseEditStudent={this.onCloseEditStudent}
-                        studentName = {this.state.studentName}
-                        studentAge ={this.state.studentAge}
-                        studentBirthday ={this.state.studentBirthday}
-                        studentEmail ={this.state.studentEmail}
-                        studentGender ={this.state.studentGender}
-                        studentIsSelected ={this.state.studentIsSelected}
-                        getListStudents ={this.getListStudents}
-                        currentPage ={this.state.currentPage}
-                        pageSize ={this.state.pageSize}
-                      
+                        studentName={this.state.studentName}
+                        studentAge={this.state.studentAge}
+                        studentBirthday={this.state.studentBirthday}
+                        studentEmail={this.state.studentEmail}
+                        studentGender={this.state.studentGender}
+                        studentIsSelected={this.state.studentIsSelected}
+                        getListStudents={this.getListStudents}
+                        currentPage={this.state.currentPage}
+                        pageSize={this.state.pageSize}
+
                     />
 
                 </div>

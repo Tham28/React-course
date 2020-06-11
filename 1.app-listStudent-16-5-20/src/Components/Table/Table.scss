@@ -1,3 +1,44 @@
+.header {
+    background-color: rgb(197, 195, 195);
+
+    .container {
+        width: 100%;
+        display: flex;
+        margin: 0 auto;
+        max-width: 1200px;
+        justify-content: space-between;
+        align-items: center;
+        .logo {
+            display: flex;
+            align-items: center;
+            .img-logo {
+                width: 45px;
+                padding: 15px;
+                padding-left: 0;
+            }
+            .manage {
+                font-size: 16px;
+                font-weight: bold;
+                text-transform: uppercase;
+                color: rgb(4, 80, 116);
+            }
+        }
+        .title {
+            width: 55%;
+            display: flex;
+            color: #3b697e;
+            font-size: 16px;
+            .ant-menu-horizontal {
+                background-color: #c5c3c3;
+                .ant-menu-item-selected, .ant-menu-item-active {
+                    color:#045074;
+                    border-bottom: 2px solid #045074;
+                }
+            }
+        }
+       
+    }
+}
 .student-container {
     width: 100%;
     max-width: 1200px;
@@ -93,7 +134,7 @@
         .ant-modal-confirm-confirm {
             .ant-modal-content {
                 border-radius: 15px;
-                
+
                 .ant-modal-body {
                     .ant-modal-confirm-body-wrapper {
                         .ant-modal-confirm-body {
@@ -110,15 +151,15 @@
                             .ant-btn {
                                 border: 1px solid red;
                                 border-radius: 10px;
-                                &:hover{
+                                &:hover {
                                     color: red;
                                 }
                             }
                             .ant-btn-primary {
                                 background-color: red;
-                               &:hover{
-                                   color: #fff;
-                               }
+                                &:hover {
+                                    color: #fff;
+                                }
                             }
                         }
                     }

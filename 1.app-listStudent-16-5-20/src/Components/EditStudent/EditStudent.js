@@ -4,8 +4,8 @@ import { DATE_FORMAT, APP_DOMAIN, MALE, FEMALE } from '../../constants/constants
 import moment from 'moment'
 import { DatePicker, Radio } from 'antd';
 import { Modal } from 'antd';
-import { UserAddOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
+import { Translation } from 'react-i18next';
 
 toast.configure()
 
@@ -25,7 +25,7 @@ class EditStudent extends Component {
             errorGender: "",
             errorEmail: "",
             open: false
-            
+
         }
     }
     static getDerivedStateFromProps(props, state) {
@@ -73,7 +73,7 @@ class EditStudent extends Component {
             listStudent
         } = this.state
 
-        const {getListStudents, pageSize, currentPage, studentIsSelected } =this.props
+        const { getListStudents, pageSize, currentPage, studentIsSelected } = this.props
 
         const regEmail = /^[a-zA-Z0-9]+@(?:[a-zA-Z0-9]+\.)+[A-Za-z]+$/
         const checkingResult = regEmail.test(studentEmail);
@@ -114,12 +114,12 @@ class EditStudent extends Component {
             })
             return;
         }
-        if(studentIsSelected){
-            const editStudentData ={
+        if (studentIsSelected) {
+            const editStudentData = {
                 'name': studentName,
                 'age': studentAge,
                 'email': studentEmail,
-                'birthDate': Math.floor(studentBirthday.valueOf()/1000),
+                'birthDate': Math.floor(studentBirthday.valueOf() / 1000),
                 'gender': studentGender
 
             }
@@ -133,39 +133,55 @@ class EditStudent extends Component {
                 .then(response => response.json())
                 .then(data => {
                     this.props.onCloseEditStudent();
-    
+
                     if (getListStudents && typeof getListStudents == 'function') {
                         getListStudents(currentPage, pageSize)
                     }
                     toast.success('Thêm thành công!', { position: toast.POSITION.TOP_CENTER, autoClose: 2000 })
-                
-    
+
+
                 })
                 .catch((error) => {
                     console.error('Error:', error);
                 });
-    
+
         }
     }
 
-   
+
 
     render() {
         const { open, studentBirthday, studentName, studentAge, studentEmail, studentGender } = this.state;
         return (
             <Modal
-                title="Sửa sinh viên"
+                title={<Translation>
+                    {
+                        t => <span>{t("editStudent")}</span>
+                    }
+                </Translation>}
                 visible={open}
                 onOk={this.handleOk}
                 onCancel={this.handleCancel}
-                okText='Sửa'
-                cancelText='Hủy'
+                okText={<Translation>
+                    {
+                        t => <span>{t("edit")}</span>
+                    }
+                </Translation>}
+                cancelText={<Translation>
+                    {
+                        t => <span>{t("btnCancel")}</span>
+                    }
+                </Translation>}
                 wrapClassName='edit-student-modal-container'
             >
                 <form >
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Họ và tên:</label>
+                            <label htmlFor=""><Translation>
+                                {
+                                    t => <span>{t("Fullname")}</span>
+                                }
+                            </Translation></label>
                             <input type="text" minLength='8' value={studentName} onChange={(e) => {
                                 const nameTxt = e.target.value.replace(/\d/, '')
                                 this.setState({
@@ -188,7 +204,11 @@ class EditStudent extends Component {
                     </div>
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Tuổi:</label>
+                            <label htmlFor=""><Translation>
+                                {
+                                    t => <span>{t("age")}</span>
+                                }
+                            </Translation></label>
                             <input type='text' value={studentAge} onChange={(e) => {
                                 const ageTxt = e.target.value.replace(/\D/, '')
 
@@ -214,7 +234,11 @@ class EditStudent extends Component {
                     </div>
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Ngày sinh:</label>
+                            <label htmlFor=""><Translation>
+                                {
+                                    t => <span>{t("birthday")}</span>
+                                }
+                            </Translation></label>
                             <DatePicker
                                 format={DATE_FORMAT}
                                 onChange={this.handleChangeBirthday}
@@ -230,7 +254,11 @@ class EditStudent extends Component {
 
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Giới tính:</label>
+                            <label htmlFor=""><Translation>
+                                {
+                                    t => <span>{t("gender")}</span>
+                                }
+                            </Translation></label>
                             <div className='gender'>
                                 <Radio.Group onChange={(e) => {
                                     this.setState({
@@ -240,10 +268,18 @@ class EditStudent extends Component {
                                 }}
                                     value={studentGender}>
                                     <Radio value={MALE}>
-                                        Nam
+                                        <Translation>
+                                            {
+                                                t => <span>{t("male")}</span>
+                                            }
+                                        </Translation>
                                     </Radio>
                                     <Radio value={FEMALE}>
-                                        Nữ
+                                        <Translation>
+                                            {
+                                                t => <span>{t("female")}</span>
+                                            }
+                                        </Translation>
                                     </Radio>
                                 </Radio.Group>
                             </div>
@@ -260,7 +296,11 @@ class EditStudent extends Component {
 
                     <div className="addStudent">
                         <div className='left'>
-                            <label htmlFor="">Email:</label>
+                            <label htmlFor=""><Translation>
+                                {
+                                    t => <span>{t("email")}</span>
+                                }
+                            </Translation></label>
                             <input type="text" value={studentEmail} onChange={(e) => {
                                 this.setState({
                                     studentEmail: e.target.value,
