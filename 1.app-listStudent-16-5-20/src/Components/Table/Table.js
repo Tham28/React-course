@@ -15,12 +15,12 @@ import AddStudent from '../AddStudent/AddStudent'
 import { Empty, Spin, Select, Checkbox, Modal, Button, Menu } from 'antd';
 import EditStudent from '../EditStudent/EditStudent';
 import { toast } from 'react-toastify';
-import hat from '../../images/hat-graduate.png';
+
 
 import i18n from '../../i18n'
 import ChangeLocale from '../ChangeLocale/ChangeLocale'
-
 import { Translation } from 'react-i18next';
+import Header from '../Header/Header'
 
 toast.configure()
 const { Option } = Select;
@@ -301,7 +301,8 @@ class Table extends Component {
 
         return (
             <Spin spinning={isDataProgresing}>
-                <div className="header">
+               
+                {/* <div className="header">
                     <div className="container">
                         <div className="logo">
                             <img className='img-logo' src={hat} alt="" />
@@ -329,7 +330,7 @@ class Table extends Component {
                         </div>
                         <ChangeLocale />
                     </div>
-                </div>
+                </div> */}
                 <div className='student-container'>
                     <div className="wr-action">
                         <BtnAdd onClick={this.showModalAdd} currentPage={currentPage} pageSize={pageSize} ><PlusOutlined />
