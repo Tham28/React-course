@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import './ProjectPage.scss'
 import Table from '../../Components/Table/Table'
-import Header from '../../Components/Header/Header'
 
 
 class ProjectPage extends Component{
@@ -12,7 +11,6 @@ class ProjectPage extends Component{
     render(){
         return(
             <div>
-               
                 <Table />
             </div>
         )

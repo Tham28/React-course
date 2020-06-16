@@ -4,9 +4,7 @@ import { Select } from 'antd';
 import vn from '../../images/vn.png'
 import en from '../../images/en.png'
 import i18n from '../../i18n'
-import {
-    CaretDownOutlined
-} from '@ant-design/icons';
+import { CaretDownOutlined} from '@ant-design/icons';
 
 const { Option } = Select;
 

@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import './HomePage.scss'
-import Header from '../../Components/Header/Header'
+import './LoginPage.scss'
+import Login from '../../Components/Login/Login'
 
 
-class HomePage extends Component{
+class LoginPage extends Component{
     constructor (props){
         super(props);
 
@@ -11,10 +11,10 @@ class HomePage extends Component{
     render(){
         return(
             <div>
-                <div>Đây là trang chủ</div>
+                <Login />
             </div>
         )
     }
 }
 
-export default HomePage
+export default LoginPage
