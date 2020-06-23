@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import './Login.scss'
 import { Form, Input, Button, Checkbox } from 'antd';
+
 import {
     BrowserRouter as Router,
     Switch,
@@ -9,7 +10,7 @@ import {
     Redirect,
     useHistory,
     useLocation
-  } from "react-router-dom";
+} from "react-router-dom";
 
 
 class Login extends Component {
@@ -32,8 +33,7 @@ class Login extends Component {
         const onFinishFailed = errorInfo => {
             console.log('Failed:', errorInfo);
         };
-       
-          
+
         return (
             <div className='login-container'>
                 <Form
@@ -65,7 +65,7 @@ class Login extends Component {
 
                     <Form.Item {...tailLayout}>
                         <Button  type="primary" htmlType="submit">
-                            Log in
+                            Log in   
                          </Button>
                     </Form.Item>
                 </Form>

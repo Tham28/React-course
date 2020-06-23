@@ -1,0 +1,112 @@
+.profile {
+    .container-profile {
+        
+        margin: 0 auto;
+        display: flex;
+        margin-top: 20px;
+        flex-direction: column;
+        @media screen and (min-width: 992px) {
+            width: 100%;
+             max-width: 1200px;
+            flex-direction: unset;
+        }
+        .left-profile {
+            width: 95%;
+            margin: 0 auto;
+            @media screen and (min-width: 992px) {
+                width: 35%;
+            }
+            .card {
+                border: 1px solid grey;
+                box-shadow: 0 0px 12px -2px grey;
+                .card-name {
+                    .img-me {
+                        width: 100%;
+                    }
+                    .text-card {
+                        h2 {
+                            margin: 20px 0 0 20px;
+                            color: rgb(245, 159, 0);;
+                        }
+                    }
+                }
+                .infor-content {
+                    padding: 20px;
+                    p {
+                        color: #757575;
+                        font-size: 15px;
+                        // color: rgb(245, 159, 0);
+                        span {
+                            margin-right: 20px;
+                        }
+                    }
+                    .skill {
+                        margin-top: 15px;
+                        font-size: 15px;
+                    }
+                    hr {
+                        margin: 30px 0;
+                    }
+                    .title-skill, .text-lang {
+                        b {
+                            font-size: 18px;
+                        }
+                    }
+                }
+            }
+        }
+        .right-profile {
+            width: 95%;
+            margin: 0 auto;
+            @media screen and (min-width: 992px) {
+                width: 65%;
+                margin-left: 20px;
+            }
+            .work-content {
+                border: 1px solid grey;
+                box-shadow: 0 0px 12px -2px grey;
+                padding: 20px;
+                h2 {
+                    span {
+                        margin-right: 20px;
+                    }
+                    font-size: 27px;
+                }
+                .inter {
+                    font-size: 25px;
+                    color: rgb(245, 159, 0);
+                    display: flex;
+                    justify-content: space-around;
+                }
+            }
+            .edu-content {
+                border: 1px solid grey;
+                box-shadow:0 0px 12px -2px grey;
+                padding: 20px;
+                margin: 20px 0;
+                h2 {
+                    span {
+                        margin-right: 20px;
+                    }
+                    font-size: 27px;
+                }
+                .infor-content {
+                    .school {
+                        font-size: 18px;
+                    }
+                    .year {
+                        font-size: 16px;
+                        color: rgb(245, 159, 0);
+                        font-weight: 400;
+                        span{
+                            margin-right: 20px;
+                        }
+                    }
+                    .student {
+                        font-size: 15px;
+                    }
+                }
+            }
+        }
+    }
+}

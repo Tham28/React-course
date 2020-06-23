@@ -12,7 +12,7 @@ class ChangeLocale extends Component {
     constructor(props) {
         super(props)
         this.state ={
-            changeLocale: 'vi'
+            changeLocale: 'en'
         }
     }
 
@@ -32,8 +32,8 @@ class ChangeLocale extends Component {
                 onChange={value => this.handleChangeLocale(value)}
                 suffixIcon ={<CaretDownOutlined />}
                 >
-                    <Option value="vi"> <img className='img-lang' src={vn} alt="" width='20px' /> Vietnamese</Option>
                     <Option value="en"><img className='img-lang' src={en} alt="" width='20px' /> English</Option>
+                    <Option value="vi"> <img className='img-lang' src={vn} alt="" width='20px' /> Vietnamese</Option>
                 </Select>
             </div>
         )

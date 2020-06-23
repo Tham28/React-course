@@ -1,23 +1,44 @@
 .header {
     background-color: rgb(197, 195, 195);
-
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
     .container {
         width: 100%;
         display: flex;
         margin: 0 auto;
         max-width: 1200px;
-        justify-content: space-between;
+        justify-content: flex-start;
         align-items: center;
+        @media screen and (min-width: 992px) {
+            justify-content: space-between;
+        }
+        .nav-link {
+            display: inline-block;
+            @media screen and (min-width: 992px) {
+                display: none;
+            }
+            .ant-btn-primary {
+                background-color: #c5c3c3;
+                border-color: #c5c3c3;
+            }
+        }
         .logo {
             display: flex;
             align-items: center;
+            width: 80%;
+            @media screen and (min-width: 992px) {
+                width: unset;
+            }
             .img-logo {
-                width: 75px;
+                width: 47px;
                 padding: 15px;
                 padding-left: 0;
             }
             .manage {
-                font-size: 24px;
+                font-size: 22px;
                 font-weight: bold;
                 text-transform: uppercase;
                 color: rgb(4, 80, 116);
@@ -30,30 +51,64 @@
             font-size: 16px;
             .ant-menu-horizontal {
                 background-color: #c5c3c3;
-                .ant-menu-item-selected, .ant-menu-item-active {
-                    color:#045074;
-                    border-bottom: 2px solid #045074;
-                }
             }
         }
         .link-page {
-            width: 57%;
-            nav {
-                ul {
-                    display: flex;
-                    margin: 0;
-                    li {
-                        margin-right: 20px;
-                        list-style: none;
-                        a {
-                            color: green;
-                            font-size: 17px;
-                            text-transform: uppercase;
+            display: none;
+            @media screen and (min-width: 992px) {
+                width: 57%;
+                display: flex;
+            }
+          
+            .ant-menu-horizontal {
+                background-color: #c5c3c3;
+                .ant-menu-item {
+                    font-size: 17px;
+                    font-weight: bold;
+                    color: rgb(240, 235, 235);
+                    &:hover{
+                        color: rgb(248, 215, 108);
+                        border-bottom: 2px solid rgb(248, 215, 108);
+                    }
+                }
+                .ant-menu-item-selected {
+                    color: rgb(245, 159, 0);
+                    border-bottom: 2px solid rgb(245, 159, 0);
+                }
+            }
+        }
+        .select-lang {
+            margin-right: 20px;
+           
+        }
+       
+    }
+}
+
+.ant-drawer-right.ant-drawer-open {
+    .ant-drawer-content-wrapper {
+        .ant-drawer-content {
+            .ant-drawer-wrapper-body {
+                .ant-drawer-header {
+                    .ant-drawer-title {
+                        text-transform: uppercase;
+                    }
+                }
+                .ant-drawer-body {
+                    nav {
+                        ul {
+                            list-style: none;
+                            padding: 0;
+                            li {
+                                a {
+                                    font-size: 16px;
+                                    color: rgb(245, 159, 0)
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-       
     }
 }

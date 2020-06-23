@@ -7,13 +7,15 @@ import {
   Switch,
   Route,
   Link
+  
 } from "react-router-dom";
 
 import { BrowserRouter } from 'react-router-dom/cjs/react-router-dom.min';
-import HomePage from './containers/HomePage/HomePage'
 import ProjectPage from './containers/ProjectPage/ProjectPage'
 import Header from './Components/Header/Header';
 import LoginPage from './containers/LoginPage/LoginPage';
+
+import ProfilePage from './containers/ProfilePage/ProfilePage';
 
 
 class App extends Component {
@@ -23,23 +25,20 @@ class App extends Component {
   render() {
 
     return (
-      <BrowserRouter>
-        <div className='container'>
-
-          <Header />
-          {/* <LoginPage /> */}
-          <Switch>
-            <Route path="/">
-              <HomePage />
-            </Route>
-            <Route path="/project">
-              <ProjectPage />
-            </Route>
-
-          </Switch>
-
-        </div>
-      </BrowserRouter>
+      <Router>
+      <div>
+      <Header />
+        <Switch>
+         
+          <Route path="/project">
+            <ProjectPage />
+          </Route>
+          <Route path="/">
+            <ProfilePage />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
 
     )
   }
