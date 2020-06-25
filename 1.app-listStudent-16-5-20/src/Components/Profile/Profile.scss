@@ -14,7 +14,7 @@
             width: 95%;
             margin: 0 auto;
             @media screen and (min-width: 992px) {
-                width: 35%;
+                width: 30%;
             }
             .card {
                 border: 1px solid grey;
@@ -59,7 +59,7 @@
             width: 95%;
             margin: 0 auto;
             @media screen and (min-width: 992px) {
-                width: 65%;
+                width: 70%;
                 margin-left: 20px;
             }
             .work-content {
@@ -83,7 +83,7 @@
                 border: 1px solid grey;
                 box-shadow:0 0px 12px -2px grey;
                 padding: 20px;
-                margin: 20px 0;
+                margin-bottom: 20px;
                 h2 {
                     span {
                         margin-right: 20px;
@@ -95,7 +95,7 @@
                         font-size: 18px;
                     }
                     .year {
-                        font-size: 16px;
+                        font-size: 17px;
                         color: rgb(245, 159, 0);
                         font-weight: 400;
                         span{
@@ -104,6 +104,16 @@
                     }
                     .student {
                         font-size: 15px;
+                    }
+                    .infor-project{
+                        font-size: 15px;
+                        margin-bottom: 10px;
+                    }
+                    .gpa{
+                        font-size: 15px;
+                    }
+                    hr {
+                        margin: 27px 0;
                     }
                 }
             }

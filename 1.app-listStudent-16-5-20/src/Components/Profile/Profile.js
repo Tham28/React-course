@@ -2,10 +2,18 @@ import React, { Component } from 'react'
 import './Profile.scss'
 import img_me from '../../images/tham.png'
 import { Progress } from 'antd';
-import { LaptopOutlined, HomeOutlined, MailOutlined, PhoneOutlined, StarOutlined, 
-    CameraOutlined,MessageOutlined, CoffeeOutlined, CustomerServiceOutlined, FacebookOutlined,
-    ScheduleOutlined, RocketOutlined, FieldTimeOutlined, FormOutlined } from '@ant-design/icons';
-
+import {
+    LaptopOutlined, HomeOutlined, MailOutlined, PhoneOutlined, StarOutlined,
+    CameraOutlined, ReadOutlined, CoffeeOutlined, CustomerServiceOutlined, FacebookOutlined,
+    ScheduleOutlined, RocketOutlined, FieldTimeOutlined, FormOutlined, GiftOutlined
+} from '@ant-design/icons';
+import { Translation } from 'react-i18next';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
 
 
 class Profile extends Component {
@@ -23,18 +31,39 @@ class Profile extends Component {
                                 <div className="card-name">
                                     <img className='img-me' src={img_me} />
                                     <div className="text-card">
-                                        <h2>TRAN THI HONG THAM</h2>
+                                        <Translation>
+                                            {
+                                                t => <h2>{t("tham")}</h2>
+                                            }
+                                        </Translation>
                                     </div>
                                 </div>
                                 <div className="infor-content">
-                                    <p><LaptopOutlined style={{ color: 'rgb(245, 159, 0)' }} /> Developer</p>
-                                    <p><HomeOutlined style={{ color: 'rgb(245, 159, 0)' }} /> 791/1 Tran Xoan Soan Street, Tan Hung Ward, District 7, Ho Chi Minh City </p>
+                                    <p><GiftOutlined style={{ color: 'rgb(245, 159, 0)' }} />
+                                        <Translation>
+                                            {
+                                                t => <span>{t("birthMe")}</span>
+                                            }
+                                        </Translation></p>
+                                    <p><HomeOutlined style={{ color: 'rgb(245, 159, 0)' }} />
+                                        <Translation>
+                                            {
+                                                t => <span>{t("addressMe")}</span>
+                                            }
+                                        </Translation>
+                                    </p>
                                     <p><MailOutlined style={{ color: 'rgb(245, 159, 0)' }} /> tththam.1998la@gmail.com</p>
                                     <p><PhoneOutlined style={{ color: 'rgb(245, 159, 0)' }} />0969132245</p>
                                     <hr />
-                                    <p className="title-skill"><b><StarOutlined style={{ fontSize: '18px', color: 'rgb(245, 159, 0)' }} />Skills</b></p>
+                                    <p className="title-skill"><b><StarOutlined style={{ fontSize: '18px', color: 'rgb(245, 159, 0)' }} />
+                                        <Translation>
+                                            {
+                                                t => <span>{t("skill")}</span>
+                                            }
+                                        </Translation>
+                                    </b></p>
                                     <div className='skill'>Html</div>
-                                    <Progress percent={75}
+                                    <Progress percent={80}
                                         strokeColor={{
                                             '0%': 'rgb(245, 159, 0)',
                                             '100%': 'rgb(245, 159, 0)',
@@ -42,28 +71,63 @@ class Profile extends Component {
                                         strokeWidth={15}
                                         status="active" />
                                     <div className='skill'>Css</div>
-                                    <Progress percent={75} strokeColor={{
+                                    <Progress percent={70} strokeColor={{
                                         '0%': 'rgb(245, 159, 0)',
                                         '100%': 'rgb(245, 159, 0)',
                                     }}
-                                    strokeWidth={15} status="active" />
+                                        strokeWidth={15} status="active" />
+
                                     <div className='skill'>Javascript</div>
                                     <Progress percent={50} strokeColor={{
                                         '0%': 'rgb(245, 159, 0)',
                                         '100%': 'rgb(245, 159, 0)',
-                                    }}  strokeWidth={15} status="active" />
+                                    }} strokeWidth={15} status="active" />
+
+                                    <div className='skill'>Bootstrap</div>
+                                    <Progress percent={50} strokeColor={{
+                                        '0%': 'rgb(245, 159, 0)',
+                                        '100%': 'rgb(245, 159, 0)',
+                                    }} strokeWidth={15} status="active" />
+
+                                    <div className='skill'>Git</div>
+                                    <Progress percent={50} strokeColor={{
+                                        '0%': 'rgb(245, 159, 0)',
+                                        '100%': 'rgb(245, 159, 0)',
+                                    }} strokeWidth={15} status="active" />
+
+
                                     <div className='skill'>React</div>
                                     <Progress percent={50} strokeColor={{
                                         '0%': 'rgb(245, 159, 0)',
                                         '100%': 'rgb(245, 159, 0)',
-                                    }}  strokeWidth={15} status="active" />
+                                    }} strokeWidth={15} status="active" />
+
+                                    <div className='skill'>Adobe Photoshop</div>
+                                    <Progress percent={50} strokeColor={{
+                                        '0%': 'rgb(245, 159, 0)',
+                                        '100%': 'rgb(245, 159, 0)',
+                                    }} strokeWidth={15} status="active" />
 
                                     <br />
                                     <hr />
 
-                                    <p className="text-lang"><b><FormOutlined style={{ color: 'rgb(245, 159, 0)' }} />Languages</b></p>
-                                    <p>Toeic: 545/990</p>
-
+                                    <p className="text-lang"><b><FormOutlined style={{ color: 'rgb(245, 159, 0)' }} />
+                                        <Translation>
+                                            {
+                                                t => <span>{t("languages")}</span>
+                                            }
+                                        </Translation>
+                                    </b></p>
+                                    <Translation>
+                                        {
+                                            t => <p>{t("listening")}</p>
+                                        }
+                                    </Translation>
+                                    <Translation>
+                                        {
+                                            t => <p>{t("speaking")}</p>
+                                        }
+                                    </Translation>
                                     <br />
                                 </div>
                             </div><br />
@@ -71,22 +135,120 @@ class Profile extends Component {
                         </div>
                         {/* Right Column */}
                         <div className="right-profile">
-                            <div className="work-content">
-                                <h2 className="txt-experience"><LaptopOutlined style={{ color: 'rgb(245, 159, 0)' }} />Work Experience</h2>
-                            </div>
                             <div className="edu-content">
-                                <h2 className="txt-edu"><ScheduleOutlined style={{ color: 'rgb(245, 159, 0)' }} />Education</h2>
+                                <h2 className="txt-experience"><LaptopOutlined style={{ color: 'rgb(245, 159, 0)' }} />
+                                <Translation>
+                                        {
+                                            t => <span>{t("project")}</span>
+                                        }
+                                    </Translation>
+                                </h2>
 
                                 <div className="infor-content">
-                                    <h5 className="school"><b>Vietnam National University Ho Chi Minh City - University of Science</b></h5>
-                                    <h6 className="year"><FieldTimeOutlined style={{ color: 'rgb(245, 159, 0)' }} />2016 - 2020</h6>
-                                    <p className='student'>Student</p>
+                                    <h5 className="school">
+                                    <Translation>
+                                        {
+                                            t => <b>{t("project_1")}</b>
+                                        }
+                                    </Translation>
+                                    </h5>
+                                    <h6 className="year">
+                                    <Translation>
+                                        {
+                                            t => <span>{t("amazign")}</span>
+                                        }
+                                    </Translation> 
+                                    </h6> 
+                                    <li><a href='https://www.w3schools.com/w3css/tryw3css_templates_cv.htm'>https://www.w3schools.com/w3css/tryw3css_templates_cv.htm</a> 
+                                    </li>
                                     <hr />
+
+                                    <h5 className="school">
+                                    <Translation>
+                                        {
+                                            t => <b>{t("project_2")}</b>
+                                        }
+                                    </Translation>
+                                    </h5>
+                                    <h6 className="year">
+                                    <Translation>
+                                        {
+                                            t => <span>{t("pig_game")}</span>
+                                        }
+                                    </Translation>
+                                       </h6> <li><a href='https://www.w3schools.com/w3css/tryw3css_templates_cv.htm'>https://www.w3schools.com/w3css/tryw3css_templates_cv.htm</a> </li>
+                                    <hr />
+
+                                    <h5 className="school">
+                                    <Translation>
+                                        {
+                                            t => <b>{t("project_3")}</b>
+                                        }
+                                    </Translation>
+                                    </h5>
+                                    <h6 className="year">
+                                    <Translation>
+                                        {
+                                            t => <span>{t("manage")}</span>
+                                        }
+                                    </Translation>
+                                     </h6>
+                                    <div className='infor-project'>
+                                    <Translation>
+                                        {
+                                            t => <span>{t("technology")}</span>
+                                        }
+                                    </Translation>
+                                     </div>
+                                    <div className='infor-project'>
+                                    <Translation>
+                                        {
+                                            t => <span>{t("description")}</span>
+                                        }
+                                    </Translation>
+                                       </div>
+                                    <li><a href='http://localhost:3000/project'>http://localhost:3000/project</a> </li>
                                 </div>
-                            </div>  
+
+                            </div>
+                            <div className="edu-content">
+                                <h2 className="txt-edu"><ScheduleOutlined style={{ color: 'rgb(245, 159, 0)' }} />
+                                <Translation>
+                                        {
+                                            t => <span>{t("education")}</span>
+                                        }
+                                    </Translation>
+                                </h2>
+
+                                <div className="infor-content">
+                                    <h5 className="school">
+                                    <Translation>
+                                        {
+                                            t => <b>{t("school")}</b>
+                                        }
+                                    </Translation>
+                                      </h5>
+                                    <h6 className="year"><FieldTimeOutlined style={{ color: 'rgb(245, 159, 0)' }} />2016 - 2020</h6>
+                                    <p className='student'>
+                                    <Translation>
+                                        {
+                                            t => <span>{t("studentMe")}</span>
+                                        }
+                                    </Translation>
+                                       </p>
+                                    <div className='gpa'>GPA: 7.45</div>
+
+                                </div>
+                            </div>
                             <div className="work-content">
-                                <h2 className="txt-experience"><RocketOutlined  style={{ color: 'rgb(245, 159, 0)' }} />Interestes</h2>
-                                <div className='inter'> <CameraOutlined /> <MessageOutlined /> <CoffeeOutlined /> <CustomerServiceOutlined /> <FacebookOutlined /> </div>
+                                <h2 className="txt-experience"><RocketOutlined style={{ color: 'rgb(245, 159, 0)' }} />
+                                <Translation>
+                                        {
+                                            t => <span>{t("interestes")}</span>
+                                        }
+                                    </Translation>
+                                </h2>
+                                <div className='inter'> <CameraOutlined /> <ReadOutlined /> <CoffeeOutlined /> <CustomerServiceOutlined /> <FacebookOutlined /> </div>
                             </div>
                         </div>
                     </div>

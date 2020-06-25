@@ -19,7 +19,7 @@ class Header extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            current: 'home',
+            current: '/',
             visible: false
         }
     }
@@ -45,6 +45,7 @@ class Header extends Component {
         return (
             <div className="header">
                 <div className="container">
+
                     <div className="nav-link">
                         <Button type="primary" onClick={this.showDrawerLink}>
                             <MenuUnfoldOutlined />
@@ -80,14 +81,15 @@ class Header extends Component {
                             </nav>
                         </Drawer>
                     </div>
+                    
 
                     <div className="logo">
                         <img className='img-logo' src={hat} alt="" />
-                        <div className="manage">student manager</div>
+                        {/* <div className="manage">student manager</div> */}
                     </div>
                     <div className="link-page">
                         <Menu onClick={this.handleClickMenu} selectedKeys={[this.state.current]} mode="horizontal">
-                            <Menu.Item key="home" icon={<ProfileOutlined />}>
+                            <Menu.Item key='/' icon={<ProfileOutlined />}>
                                 <Translation>
                                     {
                                         t => <span>{t("home")}</span>

@@ -9,7 +9,7 @@ import BtnDelete from '../../Components/UI/Button/BtnDelete'
 import { DATE_FORMAT, APP_DOMAIN, MALE, FEMALE } from '../../constants/constants'
 import {
     PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, EditOutlined, WarningOutlined,
-    ProfileOutlined, FundProjectionScreenOutlined
+    CaretUpOutlined, CaretDownOutlined, FilterOutlined, InfoCircleFilled
 } from '@ant-design/icons';
 import AddStudent from '../AddStudent/AddStudent'
 import { Empty, Spin, Select, Checkbox, Modal, Button, Menu } from 'antd';
@@ -18,9 +18,9 @@ import { toast } from 'react-toastify';
 
 
 import i18n from '../../i18n'
-import ChangeLocale from '../ChangeLocale/ChangeLocale'
+
 import { Translation } from 'react-i18next';
-import Header from '../Header/Header'
+
 
 toast.configure()
 const { Option } = Select;
@@ -30,6 +30,7 @@ class Table extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            secondListStudent: [],
             listStudent: [],
 
             studentName: '',
@@ -51,15 +52,30 @@ class Table extends Component {
             showConfirmDelete: false,
             currentMenu: 'project',
 
+            filterGender: 'all'
+
         }
     }
 
     componentDidMount() {
         const { pageSize, currentPage } = this.state
         this.getListStudents(currentPage, pageSize)
-
-
     }
+
+    handleSortInc = () => {
+        const newListStudent = [...this.state.listStudent]
+        this.setState({
+            listStudent: newListStudent.sort((a, b) => (a.age > b.age) ? 1 : ((b.age > a.age) ? -1 : 0))
+        })
+    }
+
+    handleSortDec = () => {
+        const newListStudent = [...this.state.listStudent]
+        this.setState({
+            listStudent: newListStudent.sort((a, b) => (a.age < b.age) ? 1 : ((b.age < a.age) ? -1 : 0))
+        })
+    }
+
     formatDataForDisplay(data) {
         return data.map(item => {
             return {
@@ -68,6 +84,7 @@ class Table extends Component {
                 isChecked: false
             }
         })
+
     }
 
     getListStudents = (currentPage, pageSize) => {
@@ -93,7 +110,6 @@ class Table extends Component {
                 this.setState({ isDataProgresing: false })
             })
     }
-
 
     showModalAdd = () => {
         this.setState({
@@ -288,12 +304,19 @@ class Table extends Component {
         });
     }
 
-    handleClickMenu = e => {
-        console.log('click ', e);
+    handleFilterGender = (value) => {
+      
+        const newListStudent = [...this.state.listStudent]
+        const genderSelected = newListStudent.filter(item => item.gender == value)
+      
+      
         this.setState({
-            currentMenu: e.key,
-        });
-    };
+            filterGender: value,
+            listStudent: genderSelected
+
+        })
+    }
+
 
     render() {
         const { Option } = Select;
@@ -301,36 +324,6 @@ class Table extends Component {
 
         return (
             <Spin spinning={isDataProgresing}>
-               
-                {/* <div className="header">
-                    <div className="container">
-                        <div className="logo">
-                            <img className='img-logo' src={hat} alt="" />
-                            <div className="manage">student manager</div>
-                        </div>
-                        <div className="title">
-                            <Menu onChange={this.handleClickMenu} selectedKeys={[this.state.currentMenu]} mode="horizontal">
-                                <Menu.Item key="home" icon={<ProfileOutlined />}>
-                                    <Translation>
-                                        {
-                                            t => <span>{t("home")}</span>
-                                        }
-                                    </Translation>
-                                </Menu.Item>
-                                <Menu.Item key="project" icon={<FundProjectionScreenOutlined />}>
-                                <Translation>
-                                        {
-                                            t => <span>{t("project")}</span>
-                                        }
-                                    </Translation>
-                                </Menu.Item>
-                            </Menu>
-
-
-                        </div>
-                        <ChangeLocale />
-                    </div>
-                </div> */}
                 <div className='student-container'>
                     <div className="wr-action">
                         <BtnAdd onClick={this.showModalAdd} currentPage={currentPage} pageSize={pageSize} ><PlusOutlined />
@@ -367,21 +360,44 @@ class Table extends Component {
                                         t => <span>{t("Fullname")}</span>
                                     }
                                 </Translation></th>
-                                <th><Translation>
-                                    {
-                                        t => <span>{t("age")}</span>
-                                    }
-                                </Translation></th>
+                                <th className='th-wp'>
+                                    <Translation>
+                                        {
+                                            t => <span className='age-wp'>{t("age")}</span>
+                                        }
+                                    </Translation>
+                                    <div className="arrow">
+                                        <Button onClick={this.handleSortInc} ><CaretUpOutlined style={{ fontSize: '12px', color: '#c5c3c3' }} /></Button>
+                                        <Button onClick={this.handleSortDec}><CaretDownOutlined style={{ fontSize: '12px', color: '#c5c3c3' }} /></Button>
+
+                                    </div>
+                                </th>
                                 <th><Translation>
                                     {
                                         t => <span>{t("birthday")}</span>
                                     }
                                 </Translation></th>
-                                <th><Translation>
-                                    {
-                                        t => <span>{t("gender")}</span>
-                                    }
-                                </Translation></th>
+                                <th className='th-wp'>
+                                    <Translation>
+                                        {
+                                            t => <span className='age-wp gender-wp'>{t("gender")}</span>
+                                        }
+                                    </Translation>
+                                    <div className="arrow">
+
+                                        <Select
+                                            value={this.state.filterGender}
+                                            onChange={this.handleFilterGender}
+                                            suffixIcon={<FilterOutlined />}
+
+                                        >
+                                            <Option value="Male">Male</Option>
+                                            <Option value="Female">Female</Option>
+                                            <Option value="all">All</Option>
+                                        </Select>
+
+                                    </div>
+                                </th>
                                 <th><Translation>
                                     {
                                         t => <span>{t("email")}</span>

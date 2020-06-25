@@ -30,6 +30,41 @@
                 }
             }
         }
+        .th-wp {
+            display: flex;
+            align-items: center;
+            .age-wp {
+                width: 40%;
+            }
+            .gender-wp{
+                width: 30%;
+            }
+            .arrow {
+                display: flex;
+                flex-direction: column;
+                .ant-btn {
+                    background-color: #727071;
+                    border: none;
+                    padding: 0;
+                    width: 10px;
+                    height: 16px;
+                    outline: none;
+                    line-height: 0;
+                }
+                .ant-select-show-arrow {
+                    .ant-select-selector {
+                        background-color: #727071;
+                        border: none;
+                        color: #c5c3c3;
+                        outline: none;
+                    }
+                    .ant-select-arrow {
+                        color: #c5c3c3;
+                        top: 48%;
+                    }
+                }
+            }
+        }
         .td-btn {
             width: 17%;
         }
