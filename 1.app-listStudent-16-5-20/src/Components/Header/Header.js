@@ -11,15 +11,16 @@ import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link
+    Link,
+    withRouter
 } from "react-router-dom";
+
 
 
 class Header extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            current: '/',
             visible: false
         }
     }
@@ -36,12 +37,13 @@ class Header extends Component {
     };
 
     handleClickMenu = e => {
-
-        this.setState({
-            current: e.key,
-        });
+        const {history} = this.props
+        if(history){
+            history.push(e.key)
+        }
     };
     render() {
+        const pathName =  window.location.pathname
         return (
             <div className="header">
                 <div className="container">
@@ -85,34 +87,25 @@ class Header extends Component {
 
                     <div className="logo">
                         <img className='img-logo' src={hat} alt="" />
-                        {/* <div className="manage">student manager</div> */}
                     </div>
                     <div className="link-page">
-                        <Menu onClick={this.handleClickMenu} selectedKeys={[this.state.current]} mode="horizontal">
+                        <Menu onClick={this.handleClickMenu} selectedKeys={[pathName]} mode="horizontal">
                             <Menu.Item key='/' icon={<ProfileOutlined />}>
                                 <Translation>
                                     {
                                         t => <span>{t("home")}</span>
                                     }
                                 </Translation>
-                                <li>
-                                <Link to="/"></Link>
-                                </li>
-                               
                             </Menu.Item>
 
-                            <Menu.Item key="project" icon={<FundProjectionScreenOutlined />}>
+                            <Menu.Item key="/project" icon={<FundProjectionScreenOutlined />}>
                                 <Translation>
                                     {
                                         t => <span>{t("project")}</span>
                                     }
                                 </Translation>
-                                <li>
-                                <Link to="/project"></Link>
-                                </li>
                             </Menu.Item>
                         </Menu>
-
                     </div>
                     <ChangeLocale />
                 </div>
@@ -121,4 +114,4 @@ class Header extends Component {
     }
 }
 
-export default Header
+export default withRouter(Header) 

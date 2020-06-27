@@ -9,10 +9,10 @@ import BtnDelete from '../../Components/UI/Button/BtnDelete'
 import { DATE_FORMAT, APP_DOMAIN, MALE, FEMALE } from '../../constants/constants'
 import {
     PlusOutlined, DeleteOutlined, LeftOutlined, RightOutlined, EditOutlined, WarningOutlined,
-    CaretUpOutlined, CaretDownOutlined, FilterOutlined, InfoCircleFilled
+    CaretUpOutlined, CaretDownOutlined, FilterOutlined, InfoCircleFilled, DownOutlined
 } from '@ant-design/icons';
 import AddStudent from '../AddStudent/AddStudent'
-import { Empty, Spin, Select, Checkbox, Modal, Button, Menu } from 'antd';
+import { Empty, Spin, Select, Checkbox, Modal, Button, Menu, Dropdown } from 'antd';
 import EditStudent from '../EditStudent/EditStudent';
 import { toast } from 'react-toastify';
 
@@ -30,7 +30,7 @@ class Table extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            secondListStudent: [],
+            originListStudent: [],
             listStudent: [],
 
             studentName: '',
@@ -52,7 +52,7 @@ class Table extends Component {
             showConfirmDelete: false,
             currentMenu: 'project',
 
-            filterGender: 'all'
+            filterGender: 'All'
 
         }
     }
@@ -102,6 +102,7 @@ class Table extends Component {
                 const formatedData = this.formatDataForDisplay(data)
                 this.setState({
                     listStudent: formatedData,
+                    originListStudent: formatedData,
                     isDataProgresing: false
                 })
             })
@@ -304,15 +305,16 @@ class Table extends Component {
         });
     }
 
-    handleFilterGender = (value) => {
-      
-        const newListStudent = [...this.state.listStudent]
-        const genderSelected = newListStudent.filter(item => item.gender == value)
-      
-      
+    handleFilterGender = (e) => {
+        const { listStudent, originListStudent } = this.state
+        let newListStudent = []
+        newListStudent = [...originListStudent]
+        if (e.key != 'All') {
+            newListStudent = [...newListStudent].filter(item => item.gender == e.key)
+        }
         this.setState({
-            filterGender: value,
-            listStudent: genderSelected
+            filterGender: e.key,
+            listStudent: newListStudent
 
         })
     }
@@ -321,7 +323,18 @@ class Table extends Component {
     render() {
         const { Option } = Select;
         const { showCreateStudent, showEditStudent, isDataProgresing, currentPage, pageSize, listIdsChecked } = this.state
-
+        const menu = (
+            <Menu onClick={this.handleFilterGender}>
+                <Menu.Item key='Male'>
+                    Male
+              </Menu.Item>
+                <Menu.Item key="Female">
+                    Female
+              </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item key="All">All</Menu.Item>
+            </Menu>
+        );
         return (
             <Spin spinning={isDataProgresing}>
                 <div className='student-container'>
@@ -345,101 +358,96 @@ class Table extends Component {
                             </BtnDelete>
                         }
                     </div>
-
-                    <table className='listStudent'>
-                        <thead>
-                            <tr>
-                                <th>
-                                    <Checkbox
-                                        onChange={(e) => this.handlecheckedAll(e)}
-                                        checked={this.isCheckedAll()}
-                                    />
-                                </th>
-                                <th><Translation>
-                                    {
-                                        t => <span>{t("Fullname")}</span>
-                                    }
-                                </Translation></th>
-                                <th className='th-wp'>
-                                    <Translation>
+                    <div className='table-section'>
+                        <table className='listStudent' cellspacing="0" cellpadding="0">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <Checkbox
+                                            onChange={(e) => this.handlecheckedAll(e)}
+                                            checked={this.isCheckedAll()}
+                                        />
+                                    </th>
+                                    <th><Translation>
                                         {
-                                            t => <span className='age-wp'>{t("age")}</span>
+                                            t => <span>{t("Fullname")}</span>
                                         }
-                                    </Translation>
-                                    <div className="arrow">
-                                        <Button onClick={this.handleSortInc} ><CaretUpOutlined style={{ fontSize: '12px', color: '#c5c3c3' }} /></Button>
-                                        <Button onClick={this.handleSortDec}><CaretDownOutlined style={{ fontSize: '12px', color: '#c5c3c3' }} /></Button>
+                                    </Translation></th>
+                                    <th className='th-wp'>
+                                        <Translation>
+                                            {
+                                                t => <span className='age-wp'>{t("age")}</span>
+                                            }
+                                        </Translation>
+                                        <div className="arrow">
+                                            <Button onClick={this.handleSortInc} ><CaretUpOutlined style={{ fontSize: '12px', color: '#c5c3c3' }} /></Button>
+                                            <Button onClick={this.handleSortDec}><CaretDownOutlined style={{ fontSize: '12px', color: '#c5c3c3' }} /></Button>
 
-                                    </div>
-                                </th>
-                                <th><Translation>
-                                    {
-                                        t => <span>{t("birthday")}</span>
-                                    }
-                                </Translation></th>
-                                <th className='th-wp'>
-                                    <Translation>
+                                        </div>
+                                    </th>
+                                    <th><Translation>
                                         {
-                                            t => <span className='age-wp gender-wp'>{t("gender")}</span>
+                                            t => <span>{t("birthday")}</span>
                                         }
-                                    </Translation>
-                                    <div className="arrow">
+                                    </Translation></th>
+                                    <th className='th-wp'>
+                                        <Translation>
+                                            {
+                                                t => <span className='age-wp gender-wp'>{t("gender")}</span>
+                                            }
+                                        </Translation>
+                                        <div className="arrow">
+                                            <Dropdown overlay={menu} trigger={['click']}>
+                                                <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                                                    <FilterOutlined style={{ color: '#c5c3c3' }} />
+                                                </a>
+                                            </Dropdown>
+                                        </div>
+                                    </th>
+                                    <th><Translation>
+                                        {
+                                            t => <span>{t("email")}</span>
+                                        }
+                                    </Translation></th>
+                                    <th></th>
 
-                                        <Select
-                                            value={this.state.filterGender}
-                                            onChange={this.handleFilterGender}
-                                            suffixIcon={<FilterOutlined />}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    this.state.listStudent.map((cur, idx) => {
+                                        return (
+                                            <tr key={cur.id}>
+                                                <td  >
+                                                    <Checkbox
+                                                        onChange={e => this.handleCheckedRow(e, cur)}
+                                                        checked={cur.isChecked}
+                                                    />
+                                                </td>
+                                                <td className='name'>{cur.name}</td>
+                                                <td>{cur.age}</td>
+                                                <td>{moment(cur.birthday).format(DATE_FORMAT)}</td>
+                                                <td >{cur.gender} </td>
+                                                <td>{cur.email}</td>
+                                                <td className='td-btn' >
+                                                    <button className='btn-edit' onClick={e => this.showModalEdit(e, cur)} ><EditOutlined />
+                                                        <Translation>
+                                                            {
+                                                                t => <span>{t("edit")}</span>
+                                                            }
+                                                        </Translation>
+                                                    </button>
+                                                </td>
 
-                                        >
-                                            <Option value="Male">Male</Option>
-                                            <Option value="Female">Female</Option>
-                                            <Option value="all">All</Option>
-                                        </Select>
+                                            </tr>
+                                        )
+                                    })
+                                }
 
-                                    </div>
-                                </th>
-                                <th><Translation>
-                                    {
-                                        t => <span>{t("email")}</span>
-                                    }
-                                </Translation></th>
-                                <th></th>
+                            </tbody>
+                        </table>
+                    </div>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                this.state.listStudent.map((cur, idx) => {
-                                    return (
-                                        <tr key={cur.id}>
-                                            <td  >
-                                                <Checkbox
-                                                    onChange={e => this.handleCheckedRow(e, cur)}
-                                                    checked={cur.isChecked}
-                                                />
-                                            </td>
-                                            <td className='name'>{cur.name}</td>
-                                            <td>{cur.age}</td>
-                                            <td>{moment(cur.birthday).format(DATE_FORMAT)}</td>
-                                            <td >{cur.gender} </td>
-                                            <td>{cur.email}</td>
-                                            <td className='td-btn' >
-                                                <button className='btn-edit' onClick={e => this.showModalEdit(e, cur)} ><EditOutlined />
-                                                    <Translation>
-                                                        {
-                                                            t => <span>{t("edit")}</span>
-                                                        }
-                                                    </Translation>
-                                                </button>
-                                            </td>
-
-                                        </tr>
-                                    )
-                                })
-                            }
-
-                        </tbody>
-                    </table>
                     {
                         (this.state.listStudent.length === 0) &&
                         <Empty />

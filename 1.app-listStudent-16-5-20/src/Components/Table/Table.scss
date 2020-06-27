@@ -6,100 +6,125 @@
 
     .wr-action {
         text-align: right;
+        margin-bottom: 20px;
     }
-    .listStudent {
-        border: 1px solid #727071;
-        width: 100%;
-        margin-top: 10px;
-        td,
-        th {
-            text-align: left;
-            padding: 8px;
-            .btn-edit {
-                margin-left: 20px;
-                border: none;
-                background-color: green;
-                color: #fff;
-                text-transform: uppercase;
-                font-size: 12px;
-                border-radius: 5px;
-                padding: 3px 15px;
-                outline: 0;
-                &:hover {
-                    background-color: rgb(3, 161, 3);
+    .table-section{
+        //position: relative;
+        //height: 300px;
+        //overflow: auto;
+         //margin-top: 10px;
+        .listStudent {
+            border: 1px solid #727071;
+            width: 100%;
+            //overflow: auto;
+            tr{
+                position: relative;
+                th{
+                    //position: sticky;
+                    //top: 0;
+                    background-color:#727071 ;
+                    z-index: 5;
+
+                    &.th-wp {
+                        height: 49px;
+                        display: flex;
+                        align-items: center;
+                        .age-wp {
+                            width: 40%;
+                        }
+                        .gender-wp{
+                            width: 40%;
+                        }
+                        .arrow {
+                            display: flex;
+                            flex-direction: column;
+                           
+                            .ant-btn {
+                                background-color: #727071;
+                                border: none;
+                                padding: 0;
+                                width: 10px;
+                                height: 16px;
+                                outline: none;
+                                line-height: 0;
+                            }
+                            .ant-select-show-arrow {
+                                .ant-select-selector {
+                                    background-color: #727071;
+                                    border: none;
+                                    color: #c5c3c3;
+                                    outline: none;
+                                }
+                                .ant-select-arrow {
+                                    color: #c5c3c3;
+                                    top: 48%;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                td,
+                th {
+                    text-align: left;
+                    padding: 8px;
+                    
+                    .btn-edit {
+                        margin-left: 20px;
+                        border: none;
+                        background-color: green;
+                        color: #fff;
+                        text-transform: uppercase;
+                        font-size: 12px;
+                        border-radius: 5px;
+                        padding: 3px 15px;
+                        outline: 0;
+                        &:hover {
+                            background-color: rgb(3, 161, 3);
+                        }
+                    }
                 }
             }
-        }
-        .th-wp {
-            display: flex;
-            align-items: center;
-            .age-wp {
-                width: 40%;
+           
+          
+           
+            .td-btn {
+                width: 17%;
             }
-            .gender-wp{
-                width: 30%;
-            }
-            .arrow {
+    
+            .addStudent {
+                width: 100%;
+                max-width: 1200px;
+                margin: 10px auto;
                 display: flex;
                 flex-direction: column;
-                .ant-btn {
-                    background-color: #727071;
-                    border: none;
-                    padding: 0;
-                    width: 10px;
-                    height: 16px;
-                    outline: none;
-                    line-height: 0;
-                }
-                .ant-select-show-arrow {
-                    .ant-select-selector {
-                        background-color: #727071;
-                        border: none;
-                        color: #c5c3c3;
-                        outline: none;
-                    }
-                    .ant-select-arrow {
-                        color: #c5c3c3;
-                        top: 48%;
-                    }
-                }
+            }
+            tbody tr:hover {
+                box-shadow: 0 0 5px 2px rgb(175, 172, 172);
+            }
+            thead {
+                background-color: #727071;
+                color: #fff;
+            }
+            tr:nth-child(even) {
+                background-color: #dddddd;
+            }
+            .btn-delete {
+                border: none;
+                background: rgb(248, 107, 107);
+                color: #fff;
+                padding: 3px 15px;
+                border-radius: 5px;
+                outline: 0;
+                text-transform: uppercase;
+                font-size: 12px;
+            }
+            .btn-delete:hover {
+                background: red;
             }
         }
-        .td-btn {
-            width: 17%;
-        }
-
-        .addStudent {
-            width: 100%;
-            max-width: 1200px;
-            margin: 10px auto;
-            display: flex;
-            flex-direction: column;
-        }
-        tbody tr:hover {
-            box-shadow: 0 0 5px 2px rgb(175, 172, 172);
-        }
-        thead {
-            background-color: #727071;
-            color: #fff;
-        }
-        tr:nth-child(even) {
-            background-color: #dddddd;
-        }
-        .btn-delete {
-            border: none;
-            background: rgb(248, 107, 107);
-            color: #fff;
-            padding: 3px 15px;
-            border-radius: 5px;
-            outline: 0;
-            text-transform: uppercase;
-            font-size: 12px;
-        }
-        .btn-delete:hover {
-            background: red;
-        }
     }
+   
     .no-data {
         width: 100%;
         max-width: 1200px;

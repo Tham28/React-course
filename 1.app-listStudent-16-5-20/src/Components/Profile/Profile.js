@@ -8,12 +8,7 @@ import {
     ScheduleOutlined, RocketOutlined, FieldTimeOutlined, FormOutlined, GiftOutlined
 } from '@ant-design/icons';
 import { Translation } from 'react-i18next';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    Link
-} from "react-router-dom";
+
 
 
 class Profile extends Component {
@@ -71,23 +66,18 @@ class Profile extends Component {
                                         strokeWidth={15}
                                         status="active" />
                                     <div className='skill'>Css</div>
-                                    <Progress percent={70} strokeColor={{
+                                    <Progress percent={80} strokeColor={{
                                         '0%': 'rgb(245, 159, 0)',
                                         '100%': 'rgb(245, 159, 0)',
                                     }}
                                         strokeWidth={15} status="active" />
 
                                     <div className='skill'>Javascript</div>
-                                    <Progress percent={50} strokeColor={{
+                                    <Progress percent={60} strokeColor={{
                                         '0%': 'rgb(245, 159, 0)',
                                         '100%': 'rgb(245, 159, 0)',
                                     }} strokeWidth={15} status="active" />
 
-                                    <div className='skill'>Bootstrap</div>
-                                    <Progress percent={50} strokeColor={{
-                                        '0%': 'rgb(245, 159, 0)',
-                                        '100%': 'rgb(245, 159, 0)',
-                                    }} strokeWidth={15} status="active" />
 
                                     <div className='skill'>Git</div>
                                     <Progress percent={50} strokeColor={{
@@ -97,12 +87,6 @@ class Profile extends Component {
 
 
                                     <div className='skill'>React</div>
-                                    <Progress percent={50} strokeColor={{
-                                        '0%': 'rgb(245, 159, 0)',
-                                        '100%': 'rgb(245, 159, 0)',
-                                    }} strokeWidth={15} status="active" />
-
-                                    <div className='skill'>Adobe Photoshop</div>
                                     <Progress percent={50} strokeColor={{
                                         '0%': 'rgb(245, 159, 0)',
                                         '100%': 'rgb(245, 159, 0)',
