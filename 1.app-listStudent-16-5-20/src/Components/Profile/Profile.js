@@ -65,7 +65,7 @@ class Profile extends Component {
                                         }}
                                         strokeWidth={15}
                                         status="active" />
-                                    <div className='skill'>Css</div>
+                                    <div className='skill'>Css - scss</div>
                                     <Progress percent={80} strokeColor={{
                                         '0%': 'rgb(245, 159, 0)',
                                         '100%': 'rgb(245, 159, 0)',

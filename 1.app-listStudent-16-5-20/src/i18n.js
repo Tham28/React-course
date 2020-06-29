@@ -41,7 +41,7 @@ const resources = {
       'project_3': 'Project 3: Todo app with React',
       'manage': 'Manage student: ',
       'technology':'Technology used: HTML, CSS, JS, React, ant design library.',
-      'description': ' Description: Simple mange student app with create, view, edit, delete, pagination, change locale.',
+      'description': ' Description: Simple manage student app with create, view, edit, delete, pagination, change locale.',
       'school': 'Vietnam National University Ho Chi Minh City - University of Science',
       'studentMe': 'Student',
       'interestes': 'Interestes',
